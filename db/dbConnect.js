@@ -1,26 +1,33 @@
-// lib/mongodb.js
 import mongoose from "mongoose";
 
-// Declare a global variable for the connection, to reuse it
-let isConnected;
+const DATABASE_URL = process.env.MONGO_CONNECT;
 
-export async function dbConnect() {
-  // Check if we are already connected to avoid reconnecting
-  if (isConnected) {
-    console.log("Already connected to MongoDB");
-    return;
-  }
-
-  try {
-    const db = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    isConnected = db.connections[0].readyState === 1; // Set connection state
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    throw new Error("Failed to connect to MongoDB");
-  }
+if (!DATABASE_URL) {
+  throw new Error("Please define the DATABASE_URL environment variable inside .env.local");
 }
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(DATABASE_URL, opts).then((mongoose) => {
+      return mongoose;
+    });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+export default dbConnect;
