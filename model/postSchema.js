@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
+    created_by:{ type: String, required: true },
     content: { type: String, required: true },
     location: {
       type: { type: String, enum: ['Point'], required: true, default: 'Point' },

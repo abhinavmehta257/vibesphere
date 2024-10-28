@@ -1,15 +1,14 @@
 import React from 'react';
-import { AccordionDetails, Fab } from '@mui/material';
-// import AddIcon from '@mui/icons-material/Add';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 
 const FloatingActionButton = ({ onClick }) => {
   return (
     <button
-      className='fixed bottom-[20px] right-[20px] bg-indigo-600 rounded-full w-[36px] h-[36px]'
+      className='fixed bottom-[20px] right-[20px] bg-dark-background rounded-full p-3'
       onClick={onClick}
       
     >
-      <AccordionDetails/>
+      <CreateOutlinedIcon />
     </button>
   );
 };

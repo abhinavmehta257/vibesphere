@@ -7,9 +7,13 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+      colors:{
+        "dark-background": "#101B23",
+        "light-text": "#DEE7EA",
+        "subtle-text": "#4F7396",
+        "dark-surface": "#243546",
+        "primary-text": "#0D141C",
+        "light-surface": "#E8EDF2"
       },
     },
   },

@@ -5,12 +5,13 @@ import PostList from "../components/PostList";
 import toastContext from "@/context/toastContext";
 import { Toaster, toast } from 'react-hot-toast';
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   // Handle form submission
-  const handlePostSubmit = async (content, location) => {
+  const handlePostSubmit = async (content, location, setIsPosting) => {
     const res = await fetch("/api/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,6 +27,7 @@ export default function Home() {
       errorToast(newPost.message);
     }
     setShowForm(false);
+    setIsPosting(false)
   };
 
   useEffect(()=>{
@@ -51,6 +53,13 @@ export default function Home() {
     fetchNearbyPosts();
   },[])
 
+  useEffect(()=>{
+    const user_id = Cookies.get('user_id');
+    if(!user_id){
+      Cookies.set('user_id',crypto.randomUUID());
+    }
+  },[])
+
   const successToast = (message) =>{
     toast.success(message, {
       duration: 4000, // duration in milliseconds
@@ -74,7 +83,7 @@ export default function Home() {
 
   return (
     <toastContext.Provider value={{successToast, warningToast, errorToast}}>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-dark-background">
         <div className="w-full max-w-md space-y-6">
           <h1 className="text-2xl font-bold text-center text-gray-800">VibeSphere</h1>
           {showForm && (
