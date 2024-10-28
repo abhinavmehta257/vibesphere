@@ -6,6 +6,7 @@ import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDown
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import ContextMenu from "./ContetMenu";
+import Link from "next/link";
 
 export default function Post({ post }) {
   const [upvotes, setUpvotes] = useState(post.upvotes);
@@ -106,7 +107,7 @@ export default function Post({ post }) {
                 </button>
             </div>
           <div className="text-indigo-200">
-            <ChatBubbleOutlineOutlinedIcon/>
+            <Link href={`/post?post_id=${post._id}`}><ChatBubbleOutlineOutlinedIcon/></Link>
           </div>
         </div>
     </div>
