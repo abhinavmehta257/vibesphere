@@ -7,9 +7,10 @@ const postSchema = new mongoose.Schema({
       type: { type: String, enum: ['Point'], required: true, default: 'Point' },
       coordinates: { type: [Number], required: true }, // [longitude, latitude]
     },
-    created_at: { type: Date, default: Date.now },
+    created_at: { type: Date, required:true},
     upvotes: { type: Number, default: 0 },
-    downvotes: { type: Number, default: 0 }
+    downvotes: { type: Number, default: 0 },
+    is_active:{type:Boolean, default:true}
   });
   postSchema.index({ location: '2dsphere' }); // Enable geospatial indexing
   

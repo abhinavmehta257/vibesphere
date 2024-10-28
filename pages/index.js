@@ -6,27 +6,32 @@ import toastContext from "@/context/toastContext";
 import { Toaster, toast } from 'react-hot-toast';
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
 import Cookies from "js-cookie";
+import Header from "@/components/ui/Header";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [sortType, setSortType] = useState('hot');
   // Handle form submission
   const handlePostSubmit = async (content, location, setIsPosting) => {
+    const created_at =new Date();
+    console.log(created_at);
+    
     const res = await fetch("/api/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content , location }),
+      body: JSON.stringify({ content , location,created_at }),
     });
   
     const newPost = await res.json();
     console.log(newPost);
     
     if (res.ok) {
+      setShowForm(false);
       setPosts((prevPosts) => [newPost, ...prevPosts]);
     }else{
       errorToast(newPost.message);
     }
-    setShowForm(false);
     setIsPosting(false)
   };
 
@@ -38,7 +43,7 @@ export default function Home() {
           const { latitude, longitude } = position.coords;
     
           // Send a request to the API with location and radius
-          const res = await fetch(`/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}`);
+          const res = await fetch(`/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}&sort_type=${sortType}`);
           if (!res.ok) {
             throw new Error('Failed to fetch posts');
           }
@@ -51,7 +56,7 @@ export default function Home() {
       }
     };
     fetchNearbyPosts();
-  },[])
+  },[sortType])
 
   useEffect(()=>{
     const user_id = Cookies.get('user_id');
@@ -83,13 +88,16 @@ export default function Home() {
 
   return (
     <toastContext.Provider value={{successToast, warningToast, errorToast}}>
-      <div className="min-h-screen flex items-center justify-center p-4 bg-dark-background">
+      <div className="min-h-screen p-4 bg-dark-background">
+        <Header sortType={sortType} setSortType={setSortType}/>
         <div className="w-full max-w-md space-y-6">
-          <h1 className="text-2xl font-bold text-center text-gray-800">VibeSphere</h1>
+          
           {showForm && (
             <PostForm onSubmit={handlePostSubmit} />
           )}
-          <PostList posts={posts} />
+          <div className="mt-[100px]">
+  	          <PostList posts={posts} />
+          </div>
         </div>
         <Toaster />
         <FloatingActionButton onClick={() => setShowForm(!showForm)}/>
