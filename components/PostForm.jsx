@@ -28,7 +28,7 @@ export default function PostForm({ onSubmit }) {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-80 m-0">
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-80 m-0 z-50">
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 bg-dark-surface shadow rounded-md w-[80%]">
             <textarea
                 value={text}
