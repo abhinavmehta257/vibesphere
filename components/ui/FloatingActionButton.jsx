@@ -4,7 +4,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 const FloatingActionButton = ({ onClick, showForm }) => {
   return (
     <button
-      className='fixed bottom-[20px] right-[20px] bg-dark-background rounded-full p-3'
+      className='fixed bottom-[30px] right-[30px] bg-dark-background rounded-full p-3 shadow-[0px_0px_16px_0px_#04a29f]'
       onClick={onClick}
       
     >
