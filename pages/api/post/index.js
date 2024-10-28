@@ -74,7 +74,8 @@ export default async (req, res) => {
                 location: 1,
                 content: 1,
                 upvotes: 1,
-                downvotes: 1
+                downvotes: 1,
+                comments:1
             }
         },
         {

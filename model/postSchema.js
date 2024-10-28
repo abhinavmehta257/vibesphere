@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema({
     },
     created_at: { type: Date, required:true},
     upvotes: { type: Number, default: 0 },
+    comments: { type: Number, default: 0 },
     downvotes: { type: Number, default: 0 },
     is_active:{type:Boolean, default:true}
   });

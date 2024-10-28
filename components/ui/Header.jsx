@@ -3,7 +3,7 @@ import React from 'react';
 function Header({ sortType, setSortType }) {
   return (
     <>
-      <div className='fixed top-0 left-0 bg-dark-background w-full p-4 flex flex-col items-start gap-4'>
+      <div className='fixed top-0 left-0 bg-dark-background w-full p-4 flex flex-col items-start gap-4 z-10'>
         <h3 className="text-xl font-bold text-light-text">VibeSphere</h3>
         <div className='flex gap-4'>
           <p
