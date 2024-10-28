@@ -1,14 +1,13 @@
 import RateLimit from "../model/rateLimit";
-import {dbConnect} from "../db/dbConnect"; // Assumes you have a dbConnect function for MongoDB
+import dbConnect from "../db/dbConnect"; // Assumes you have a dbConnect function for MongoDB
 
 const RATE_LIMIT_WINDOW = 1 * 60 * 1000; // 15 minutes
 const RATE_LIMIT_MAX_REQUESTS = 3;
-const limiter = rateLimit(3, 15 * 60 * 1000); 
 
 export default async function rateLimit(req, res) {
   await dbConnect();
 
-  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const ip = req?.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
   // Check if IP has an existing record in MongoDB
   let record = await RateLimit.findOne({ ip });

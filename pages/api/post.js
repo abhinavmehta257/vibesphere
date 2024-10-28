@@ -1,4 +1,4 @@
-import { dbConnect } from '@/db/dbConnect';
+import dbConnect from '@/db/dbConnect';
 import Post from '../../model/postSchema';
 import rateLimit from "../../utils/rateLimit";
 
