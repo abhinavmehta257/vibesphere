@@ -90,7 +90,7 @@ export default function Home() {
     <toastContext.Provider value={{successToast, warningToast, errorToast}}>
       <div className="min-h-screen p-4 bg-dark-background">
         <Header sortType={sortType} setSortType={setSortType}/>
-        <div className="w-full max-w-md space-y-6">
+        <div className="w-full max-w-md space-y-6 ">
           
           {showForm && (
             <PostForm onSubmit={handlePostSubmit} />
@@ -100,7 +100,7 @@ export default function Home() {
           </div>
         </div>
         <Toaster />
-        <FloatingActionButton onClick={() => setShowForm(!showForm)}/>
+        <FloatingActionButton onClick={() => setShowForm(!showForm)} showForm={showForm}/>
       </div>
     </toastContext.Provider>
   );

@@ -3,6 +3,7 @@ import Report from '@/model/reportSchema'
 
 export default async function reportPost(postId, reporterId) {
     try {
+        const reportLimit = process.env.REPORT_LIMIT;
         // Check if the user has already reported this post
         const existingReport = await Report.findOne({ post_id: postId, reporter_id: reporterId });
         if (existingReport) {
@@ -16,7 +17,7 @@ export default async function reportPost(postId, reporterId) {
         const reportCount = await Report.countDocuments({ post_id: postId });
 
         // If report count is 5 or more, deactivate the post
-        if (reportCount >= 2) {
+        if (reportCount >= reportLimit) {
             await Post.findByIdAndUpdate(postId, { is_active: false });
             return { 
                 status: "success", 
