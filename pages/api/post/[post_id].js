@@ -14,36 +14,61 @@ export default async function handler(req, res) {
       try {
         const [post] = await Post.aggregate([
             {
-                $match: {
-                    _id:new ObjectId(post_id), // Ensure post_id is an ObjectId
-                    is_active: true // Optional: Include only active posts
-                }
+              $match: {
+                _id: new ObjectId(post_id), // Ensure post_id is an ObjectId
+                is_active: true // Optional: Include only active posts
+              }
             },
             {
-                $addFields: {
-                    distance: { $toInt: { $divide: ["$distance", 1000] } } // Convert distance to kilometers and round to integer
-                }
+              $addFields: {
+                distance: { $toInt: { $divide: ["$distance", 1000] } } // Convert distance to kilometers and round to integer
+              }
             },
             {
-                $project: {
-                    created_by: 1,
-                    created_at: {
-                        $dateToString: { format: "%d-%m-%Y %H:%M", date: "$created_at" }
-                    },
-                    distance: 1,
-                    location: 1,
-                    content: 1,
-                    upvotes: 1,
-                    downvotes: 1,
-                    comments:1
+              $addFields: {
+                relative_time: {
+                  $switch: {
+                    branches: [
+                      {
+                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "minute" } }, 60] },
+                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "minute" } } }, " min"] }
+                      },
+                      {
+                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "hour" } }, 24] },
+                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "hour" } } }, " hr"] }
+                      },
+                      {
+                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "day" } }, 30] },
+                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "day" } } }, " d"] }
+                      },
+                      {
+                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "month" } }, 12] },
+                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "month" } } }, " m"] }
+                      }
+                    ],
+                    default: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "year" } } }, " y"] }
+                  }
                 }
+              }
             },
             {
-                $addFields: {
-                    score: { $subtract: ["$upvotes", "$downvotes"] } // Calculate score
-                }
+              $addFields: {
+                score: { $subtract: ["$upvotes", "$downvotes"] } // Calculate score
+              }
+            },
+            {
+              $project: {
+                created_by: 1,
+                distance: 1,
+                location: 1,
+                content: 1,
+                score: 1,
+                comments: 1,
+                relative_time: 1
+              }
             }
-        ]); // Fetch the post by ID
+          ]);
+          
         if (!post) {
           return res.status(404).json({ message: 'Post not found' });
         }

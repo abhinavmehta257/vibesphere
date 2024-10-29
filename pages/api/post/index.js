@@ -1,24 +1,22 @@
-import dbConnect from '@/db/dbConnect';
-import Post from '../../../model/postSchema';
+import dbConnect from "@/db/dbConnect";
+import Post from "../../../model/postSchema";
 import rateLimit from "../../../utils/rateLimit";
-import generateAnonymousName from '@/utils/generateAnonymousName';
-import moderateText from '@/utils/moderateText';
+import generateAnonymousName from "@/utils/generateAnonymousName";
+import moderateText from "@/utils/moderateText";
+import cookies from "next-cookies";
 
 export default async (req, res) => {
-   
-  if (req.method === 'POST') {
-    
+  if (req.method === "POST") {
     const isAllowed = await rateLimit(req, res);
     if (!isAllowed) return;
 
     const { content, location, created_at } = req.body;
-    
-    
+
     try {
       const result = await moderateText(content);
       console.log(result);
-      
-      if(!result.isApproved){
+
+      if (!result.isApproved) {
         return res.status(400).json({ message: result.message });
       }
 
@@ -27,78 +25,220 @@ export default async (req, res) => {
         created_by: generateAnonymousName(),
         content,
         location: {
-          type: 'Point',
-          coordinates: [location.longitude, location.latitude]
+          type: "Point",
+          coordinates: [location.longitude, location.latitude],
         },
-        created_at
+        created_at,
       });
+
       res.status(201).json(post);
     } catch (error) {
-      res.status(400).json({ message: 'Error creating post' });
+      res.status(400).json({ message: "Error creating post" });
     }
   }
-  if(req.method === 'GET'){
-    const { longitude, latitude, sort_type} = req.query; 
+  if (req.method === "GET") {
+    const { longitude, latitude, sort_type } = req.query;
+
+    if (!longitude || !latitude) {
+      res
+        .status(400)
+        .json({ message: "Please allow location in order to use the app" });
+    }
+
     const radius = process.env.SPHERE_RADIOUS;
     await dbConnect();
     try {
       const posts = await Post.aggregate([
         {
-            $geoNear: {
-                near: {
-                    type: "Point",
-                    coordinates: [parseFloat(longitude), parseFloat(latitude)]
-                },
-                distanceField: "distance",
-                maxDistance: parseInt(radius),
-                spherical: true
-            }
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [parseFloat(longitude), parseFloat(latitude)],
+            },
+            distanceField: "distance",
+            maxDistance: parseInt(radius),
+            spherical: true,
+          },
         },
         {
           $match: {
-              is_active: true // Only include active posts
-          }
-      },
-        {
-            $addFields: {
-                distance: { $toInt: { $divide: ["$distance", 1000] } } // Convert distance to kilometers and round to integer
-            }
+            is_active: true, // Only include active posts
+          },
         },
         {
-            $project: {
-                created_by: 1,
-                created_at: {
-                    $dateToString: { format: "%d-%m-%Y %H:%M", date: "$created_at" }
+          $addFields: {
+            distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
+          },
+        },
+        {
+          $addFields: {
+            score: { $subtract: ["$upvotes", "$downvotes"] }, // Calculate the score based on upvotes - downvotes
+          },
+        },
+        {
+          $sort: {
+            ...(sort_type === "hot"
+              ? { score: -1 } // Sort by score (highest upvotes - downvotes first)
+              : { created_at: -1 }), // Sort by newest first
+          },
+        },
+        {
+          $addFields: {
+            relative_time: {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $lt: [
+                        {
+                          $dateDiff: {
+                            startDate: "$created_at",
+                            endDate: "$$NOW",
+                            unit: "minute",
+                          },
+                        },
+                        60,
+                      ],
+                    },
+                    then: {
+                      $concat: [
+                        {
+                          $toString: {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "minute",
+                            },
+                          },
+                        },
+                        " min",
+                      ],
+                    },
+                  },
+                  {
+                    case: {
+                      $lt: [
+                        {
+                          $dateDiff: {
+                            startDate: "$created_at",
+                            endDate: "$$NOW",
+                            unit: "hour",
+                          },
+                        },
+                        24,
+                      ],
+                    },
+                    then: {
+                      $concat: [
+                        {
+                          $toString: {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "hour",
+                            },
+                          },
+                        },
+                        " hr",
+                      ],
+                    },
+                  },
+                  {
+                    case: {
+                      $lt: [
+                        {
+                          $dateDiff: {
+                            startDate: "$created_at",
+                            endDate: "$$NOW",
+                            unit: "day",
+                          },
+                        },
+                        30,
+                      ],
+                    },
+                    then: {
+                      $concat: [
+                        {
+                          $toString: {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "day",
+                            },
+                          },
+                        },
+                        " d",
+                      ],
+                    },
+                  },
+                  {
+                    case: {
+                      $lt: [
+                        {
+                          $dateDiff: {
+                            startDate: "$created_at",
+                            endDate: "$$NOW",
+                            unit: "month",
+                          },
+                        },
+                        12,
+                      ],
+                    },
+                    then: {
+                      $concat: [
+                        {
+                          $toString: {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "month",
+                            },
+                          },
+                        },
+                        " m",
+                      ],
+                    },
+                  },
+                ],
+                default: {
+                  $concat: [
+                    {
+                      $toString: {
+                        $dateDiff: {
+                          startDate: "$created_at",
+                          endDate: "$$NOW",
+                          unit: "year",
+                        },
+                      },
+                    },
+                    " y",
+                  ],
                 },
-                distance: 1,
-                location: 1,
-                content: 1,
-                upvotes: 1,
-                downvotes: 1,
-                comments:1
-            }
+              },
+            },
+          },
         },
+
         {
-            $addFields: {
-                score: { $subtract: ["$upvotes", "$downvotes"] } // Calculate the score based on upvotes - downvotes
-            }
+          $project: {
+            created_by: 1,
+            distance: 1,
+            location: 1,
+            content: 1,
+            comments: 1,
+            relative_time: 1,
+            score: 1,
+          },
         },
-        {
-            $sort: {
-                ...(sort_type === "hot"
-                    ? { score: -1 } // Sort by score (highest upvotes - downvotes first)
-                    : { created_at: -1 }) // Sort by newest first
-            }
-        }
-    ]);
-    
-    console.log(posts);
-    
-        res.status(200).json(posts);
+      ]);
+
+      console.log(posts);
+
+      res.status(200).json(posts);
     } catch (error) {
-        console.log(error);
-        
-        res.status(500).json({ error: 'Error fetching posts' });
+      console.log(error);
+
+      res.status(500).json({ error: "Error fetching posts" });
     }
   }
 };

@@ -1,36 +1,50 @@
 import RateLimit from "../model/rateLimit";
 import dbConnect from "../db/dbConnect"; // Assumes you have a dbConnect function for MongoDB
+import cookies from "next-cookies";
 
-const RATE_LIMIT_WINDOW = 1 * 60 * 1000; // 15 minutes
-const RATE_LIMIT_MAX_REQUESTS = 3;
+const RATE_LIMIT_WINDOW = process.env.RATE_LIMIT_WINDOW * 60 * 1000; // 15 minutes
+const RATE_LIMIT_MAX_REQUESTS = process.env.RATE_LIMIT_MAX_REQUESTS;
 
 export default async function rateLimit(req, res) {
   await dbConnect();
 
-  const ip = req?.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const { user_id } = cookies({ req });
 
-  // Check if IP has an existing record in MongoDB
-  let record = await RateLimit.findOne({ ip });
+  // Check if user has an existing rate limit record in MongoDB
+  let record = await RateLimit.findOne({ user_id });
 
   if (!record) {
-    // If no record, create a new one with an expiration time
+    // No record exists, create a new one with an expiration time
     const expiresAt = new Date(Date.now() + RATE_LIMIT_WINDOW);
-    await RateLimit.create({ ip, count: 1, expiresAt });
+    await RateLimit.create({ user_id, count: 1, expiresAt });
     return true;
   }
 
-  // If the IP already has a record, check the request count
+  // If the rate limit window has expired, reset the count and expiration time
+  if (Date.now() > record.expiresAt.getTime()) {
+    record.count = 1;
+    record.expiresAt = new Date(Date.now() + RATE_LIMIT_WINDOW);
+    await record.save();
+    return true;
+  }
+
+  // If the rate limit window has not expired, check the request count
   if (record.count < RATE_LIMIT_MAX_REQUESTS) {
-    // Update the request count
+    // Increment the request count
     record.count += 1;
     await record.save();
     return true;
   }
 
-  // If rate limit exceeded
-  res.setHeader("Retry-After", Math.ceil((record.expiresAt.getTime() - Date.now()) / 1000));
-  res.status(429).json({ message: "Too many requests, please try again later." });
+  // If rate limit is exceeded
+  res.setHeader(
+    "Retry-After",
+    Math.ceil((record.expiresAt.getTime() - Date.now()) / 1000)
+  );
+  res.status(429).json({
+    message: `Too many requests, please try again after ${Math.ceil(
+      RATE_LIMIT_WINDOW / (60 * 1000)
+    )} minutes.`,
+  });
   return false;
 }
-
-  
