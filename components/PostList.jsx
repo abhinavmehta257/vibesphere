@@ -23,7 +23,9 @@ export default function PostList({ sortType }) {
         const res = await fetch(
           `/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}&sort_type=${sortType}&page=${page}`
         );
-        if (!res.ok) {
+        if (res.ok) {
+          setIsLoading(false);
+        } else {
           throw new Error("Failed to fetch posts");
         }
 
@@ -33,8 +35,6 @@ export default function PostList({ sortType }) {
       });
     } catch (error) {
       console.error("Error fetching nearby posts:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
