@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CommentInput from "@/components/CommentInput";
 import CommentList from "@/components/CommentList";
+import Link from "next/link";
 
 function PostPage() {
   const router = useRouter();
@@ -41,7 +42,9 @@ function PostPage() {
   return (
     <>
       <div className="min-h-screen p-4 pb-24 bg-dark-background">
-        <h3 className="text-xl font-bold text-light-text mb-4">VibeSphere</h3>
+        <Link href={"/"}>
+          <h3 className="text-xl font-bold text-light-text mb-4">VibeSphere</h3>
+        </Link>
         {post ? (
           <div className="p-4 bg-dark-surface rounded-md shadow">
             <div className="flex gap-2 w-full">

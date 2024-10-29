@@ -37,15 +37,19 @@ export default async (req, res) => {
     }
   }
   if (req.method === "GET") {
-    const { longitude, latitude, sort_type } = req.query;
+    const { longitude, latitude, sort_type, page = 1, limit = 10 } = req.query;
 
     if (!longitude || !latitude) {
-      res
+      return res
         .status(400)
         .json({ message: "Please allow location in order to use the app" });
     }
 
-    const radius = process.env.SPHERE_RADIOUS;
+    const radius = parseInt(process.env.SPHERE_RADIOUS);
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (pageNumber - 1) * pageSize;
+
     await dbConnect();
     try {
       const posts = await Post.aggregate([
@@ -56,7 +60,7 @@ export default async (req, res) => {
               coordinates: [parseFloat(longitude), parseFloat(latitude)],
             },
             distanceField: "distance",
-            maxDistance: parseInt(radius),
+            maxDistance: radius,
             spherical: true,
           },
         },
@@ -68,18 +72,12 @@ export default async (req, res) => {
         {
           $addFields: {
             distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
-          },
-        },
-        {
-          $addFields: {
-            score: { $subtract: ["$upvotes", "$downvotes"] }, // Calculate the score based on upvotes - downvotes
+            score: { $subtract: ["$upvotes", "$downvotes"] }, // Calculate score
           },
         },
         {
           $sort: {
-            ...(sort_type === "hot"
-              ? { score: -1 } // Sort by score (highest upvotes - downvotes first)
-              : { created_at: -1 }), // Sort by newest first
+            ...(sort_type === "hot" ? { score: -1 } : { created_at: -1 }),
           },
         },
         {
@@ -218,7 +216,6 @@ export default async (req, res) => {
             },
           },
         },
-
         {
           $project: {
             created_by: 1,
@@ -230,14 +227,13 @@ export default async (req, res) => {
             score: 1,
           },
         },
+        { $skip: skip }, // Skip the documents for previous pages
+        { $limit: pageSize }, // Limit the number of documents to the page size
       ]);
-
-      console.log(posts);
 
       res.status(200).json(posts);
     } catch (error) {
       console.log(error);
-
       res.status(500).json({ error: "Error fetching posts" });
     }
   }
