@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.5",
+    "@next/third-parties": "^15.0.2",
     "express-rate-limit": "^7.4.1",
     "geolib": "^3.3.4",
     "js-cookie": "^3.0.5",

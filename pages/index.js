@@ -9,6 +9,8 @@ import Cookies from "js-cookie";
 import Header from "@/components/ui/Header";
 import Loader from "@/components/ui/Loader";
 import checkLocationPermission from "@/utils/checkLocationPermission";
+import WelcomePopup from "@/components/welcomePopup";
+import Head from "next/head";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
@@ -66,6 +68,9 @@ export default function Home() {
 
   return (
     <toastContext.Provider value={{ successToast, warningToast, errorToast }}>
+      <Head>
+        <title>VibeSphere</title>
+      </Head>
       <div className="min-h-screen p-4 bg-dark-background">
         <Header sortType={sortType} setSortType={setSortType} />
         <div className="w-full h-full max-w-md space-y-6 ">
@@ -80,6 +85,7 @@ export default function Home() {
           showForm={showForm}
         />
       </div>
+      <WelcomePopup />
     </toastContext.Provider>
   );
 }

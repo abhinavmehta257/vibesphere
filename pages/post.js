@@ -5,6 +5,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CommentInput from "@/components/CommentInput";
 import CommentList from "@/components/CommentList";
 import Link from "next/link";
+import Head from "next/head";
 
 function PostPage() {
   const router = useRouter();
@@ -41,9 +42,14 @@ function PostPage() {
 
   return (
     <>
+      <Head>
+        <title>{post ? post.content.slice(0, 15) + "..." : "VibeSphere"}</title>
+      </Head>
       <div className="min-h-screen p-4 pb-24 bg-dark-background">
         <Link href={"/"}>
-          <h3 className="text-xl font-bold text-light-text mb-4">VibeSphere</h3>
+          <h3 className="text-2xl font-bold text-light-text mb-4">
+            VibeSphere
+          </h3>
         </Link>
         {post ? (
           <div className="p-4 bg-dark-surface rounded-md shadow">

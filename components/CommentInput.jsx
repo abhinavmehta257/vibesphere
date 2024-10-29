@@ -50,7 +50,7 @@ function CommentInput({ postId, setPost }) {
         className="px-4 py-2 bg-primary text-light-text rounded-lg hover:bg-primary-hover transition border-[1px] border-dark-surface focus:border-light-text focus:border-[1px]"
         disabled={isPosting}
       >
-        {isPosting ? "..." : "Post"}
+        {isPosting ? <div className="loader w-3"></div> : "Post"}
       </button>
       <Toaster />
     </div>

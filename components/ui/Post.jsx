@@ -7,11 +7,13 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ContextMenu from "./ContetMenu";
 import Link from "next/link";
+import Loader from "./Loader";
 
 export default function Post({ post }) {
   const [score, setScore] = useState(post.score);
   const { errorToast, successToast } = useContext(toastContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVoting, setIsVote] = useState(false);
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent card click when menu is toggled
@@ -34,6 +36,8 @@ export default function Post({ post }) {
   };
 
   const handleUpvote = async () => {
+    setIsVote(true);
+
     const res = await fetch("/api/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -41,14 +45,17 @@ export default function Post({ post }) {
     });
     const response = await res.json();
     if (res.ok) {
+      setIsVote(false);
       setScore((prev) => prev + 1);
     } else {
+      setIsVote(false);
       errorToast(response.message);
       console.error("Failed to upvote.");
     }
   };
 
   const handleDownvote = async () => {
+    setIsVote(true);
     const res = await fetch("/api/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,8 +64,10 @@ export default function Post({ post }) {
     const response = await res.json();
 
     if (res.ok) {
-      setScore((prev) => prev + 1);
+      setIsVote(false);
+      setScore((prev) => prev - 1);
     } else {
+      setIsVote(false);
       errorToast(response.message);
       console.error("Failed to downvote.");
     }
@@ -95,24 +104,30 @@ export default function Post({ post }) {
           <p className="text-light-text">{post.content}</p>
         </div>
       </div>
-      <div className="flex justify-start gap-4 text-[12px] text-subtle-text pb-2">
+      {/* <div className="flex justify-start gap-4 text-[12px] text-subtle-text pb-2">
         <div>{post.comments || "0"} comments</div>
-      </div>
-      <div className="flex justify-start items-center gap-6 text-[12px] text-subtle-text border-t-[1px] border-dark-background pt-2">
-        <div className="flex gap-2 items-center">
+      </div> */}
+      <div className="flex justify-start items-center gap-6 text-[12px] text-subtle-text border-t-[1px] border-dark-background mt-2">
+        <div className="flex items-center">
           <button
             onClick={handleUpvote}
+            disabled={isVoting}
             className="flex items-center text-indigo-200"
           >
             <span className="mr-1">
               <KeyboardArrowUpOutlinedIcon className="text-[36px]" />
             </span>
           </button>
-          <p className="text-light-text text-[14px] font-semibold text-center">
-            {score}
-          </p>
+          {!isVoting ? (
+            <p className="text-light-text text-[14px] font-semibold text-center">
+              {score}
+            </p>
+          ) : (
+            <div className="loader w-3"></div>
+          )}
           <button
             onClick={handleDownvote}
+            disabled={isVoting}
             className="flex items-center text-indigo-200"
           >
             <span className="mr-1">
@@ -120,9 +135,13 @@ export default function Post({ post }) {
             </span>
           </button>
         </div>
+
         <div className="text-indigo-200">
-          <Link href={`/post?post_id=${post._id}`}>
-            <ChatBubbleOutlineOutlinedIcon />
+          <Link href={`/post?post_id=${post._id}`} className="flex gap-2">
+            <ChatBubbleOutlineOutlinedIcon />{" "}
+            <p className="text-light-text text-[14px] font-semibold text-center">
+              {post.comments || "0"}
+            </p>
           </Link>
         </div>
       </div>
