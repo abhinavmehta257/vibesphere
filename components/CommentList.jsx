@@ -12,7 +12,9 @@ function CommentList({ comments }) {
       <h1 className="text-light-text text-xl">Comments</h1>
       <div className="mt-2 flex flex-col gap-4 h-[60dvh] overflow-y-auto">
         {comments.map((comment) => (
-          <CommentCard comment={comment} />
+          <div key={comment._id}>
+            <CommentCard comment={comment} />
+          </div>
         ))}
         <div ref={bottomRef} />
       </div>

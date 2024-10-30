@@ -6,7 +6,7 @@ function CommentCard({ comment }) {
   const { created_at } = comment;
   const relative_time = getRelativeTime(created_at);
   return (
-    <div key={comment.id} className="bg-dark-surface p-3 rounded-md">
+    <div className="bg-dark-surface p-3 rounded-md">
       <div className="flex gap-2 items-center">
         <div className="flex justify-center items-center rounded-full bg-dark-background text-light-text w-[32px] h-[32px]">
           <PersonOutlinedIcon className="text-[16px]" />
