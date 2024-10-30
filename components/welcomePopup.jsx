@@ -39,7 +39,7 @@ const WelcomePopup = () => {
             className="mt-4 bg-dark-surface text-white px-4 py-2 rounded hover:bg-indigo-700 focus:outline-none"
             onClick={handleClosePopup}
           >
-            Let's Get Started
+            Let&apos;s Get Started
           </button>
         </div>
       </div>
