@@ -35,7 +35,13 @@ export default async (req, res) => {
     }
   }
   if (req.method === "GET") {
-    const { longitude, latitude, sort_type, page = 1, limit = 10 } = req.query;
+    const {
+      longitude,
+      latitude,
+      sort_type = "hot",
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     if (!longitude || !latitude) {
       return res

@@ -104,7 +104,7 @@ export default function Post({ post }) {
       {/* <div className="flex justify-start gap-4 text-[12px] text-subtle-text pb-2">
         <div>{post.comments || "0"} comments</div>
       </div> */}
-      <div className="flex justify-start items-center gap-6 text-[12px] text-subtle-text border-t-[1px] border-dark-background mt-2">
+      <div className="flex justify-start items-center gap-6 text-[12px] text-subtle-text border-t-[1px] border-dark-background mt-2 pt-2">
         <div className="flex items-center">
           <button
             onClick={handleUpvote}

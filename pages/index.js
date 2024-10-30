@@ -15,9 +15,21 @@ import Head from "next/head";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
-  const [sortType, setSortType] = useState("hot");
+  const [sortType, setSortType] = useState("");
   const [posts, setPosts] = useState([]);
   // Handle form submission
+
+  useEffect(() => {
+    const storedSortType = localStorage.getItem("sortType");
+    if (storedSortType) {
+      setSortType(storedSortType);
+    }
+  }, []);
+
+  // Update localStorage whenever sortType changes
+  useEffect(() => {
+    localStorage.setItem("sortType", sortType);
+  }, [sortType]);
 
   useEffect(() => {
     const user_id = Cookies.get("user_id");
