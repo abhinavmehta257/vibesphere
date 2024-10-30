@@ -22,9 +22,7 @@ export default function PostList({ sortType }) {
 
         // Send a request to the API with location, radius, sortType, and page
         const res = await fetch(
-          `/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}&sort_type=${
-            sortType == "" ? "hot" : sortType
-          }&page=${page}`
+          `/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}&sort_type=${sortType}&page=${page}`
         );
         if (res.ok) {
           setIsLoading(false);

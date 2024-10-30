@@ -15,7 +15,7 @@ import Head from "next/head";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
-  const [sortType, setSortType] = useState("");
+  const [sortType, setSortType] = useState("new");
   const [posts, setPosts] = useState([]);
   // Handle form submission
 
