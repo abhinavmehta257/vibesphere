@@ -50,6 +50,15 @@ export default async (req, res) => {
     const pageSize = parseInt(limit);
     const skip = (pageNumber - 1) * pageSize;
 
+    console.log(
+      "pageNumber: ",
+      pageNumber,
+      "pageSize: ",
+      pageSize,
+      "skip: ",
+      skip
+    );
+
     await dbConnect();
     try {
       const posts = await Post.aggregate([
@@ -69,6 +78,8 @@ export default async (req, res) => {
             is_active: true, // Only include active posts
           },
         },
+        { $skip: skip }, // Skip the documents for previous pages
+        { $limit: pageSize },
         {
           $addFields: {
             distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
@@ -227,8 +238,7 @@ export default async (req, res) => {
             score: 1,
           },
         },
-        { $skip: skip }, // Skip the documents for previous pages
-        { $limit: pageSize }, // Limit the number of documents to the page size
+        // Limit the number of documents to the page size
       ]);
 
       res.status(200).json(posts);
