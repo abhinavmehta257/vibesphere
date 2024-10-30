@@ -15,7 +15,7 @@ export default function ShareContextMenu({
     successToast("Link copied to clipboard!");
   };
   const handleShareVia = () => {
-    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/post?post_id=${post_id}`;
+    const url = `/post?post_id=${post_id}`;
 
     const shareData = {
       title: "Check out this anonymous post!",
