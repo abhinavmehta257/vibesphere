@@ -1,16 +1,14 @@
 import dbConnect from "@/db/dbConnect";
 import Post from "../../../model/postSchema";
 import rateLimit from "../../../utils/rateLimit";
-import generateAnonymousName from "@/utils/generateAnonymousName";
 import moderateText from "@/utils/moderateText";
-import cookies from "next-cookies";
 
 export default async (req, res) => {
   if (req.method === "POST") {
     const isAllowed = await rateLimit(req, res);
     if (!isAllowed) return;
 
-    const { content, location, created_at } = req.body;
+    const { content, location, created_at, created_by } = req.body;
 
     try {
       const result = await moderateText(content);
@@ -22,7 +20,7 @@ export default async (req, res) => {
 
       await dbConnect();
       const post = await Post.create({
-        created_by: generateAnonymousName(),
+        created_by,
         content,
         location: {
           type: "Point",
@@ -56,7 +54,9 @@ export default async (req, res) => {
       "pageSize: ",
       pageSize,
       "skip: ",
-      skip
+      skip,
+      "radius: ",
+      radius
     );
 
     await dbConnect();
@@ -78,8 +78,6 @@ export default async (req, res) => {
             is_active: true, // Only include active posts
           },
         },
-        { $skip: skip }, // Skip the documents for previous pages
-        { $limit: pageSize },
         {
           $addFields: {
             distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
@@ -92,152 +90,18 @@ export default async (req, res) => {
           },
         },
         {
-          $addFields: {
-            relative_time: {
-              $switch: {
-                branches: [
-                  {
-                    case: {
-                      $lt: [
-                        {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "minute",
-                          },
-                        },
-                        60,
-                      ],
-                    },
-                    then: {
-                      $concat: [
-                        {
-                          $toString: {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "minute",
-                            },
-                          },
-                        },
-                        " min",
-                      ],
-                    },
-                  },
-                  {
-                    case: {
-                      $lt: [
-                        {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "hour",
-                          },
-                        },
-                        24,
-                      ],
-                    },
-                    then: {
-                      $concat: [
-                        {
-                          $toString: {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "hour",
-                            },
-                          },
-                        },
-                        " hr",
-                      ],
-                    },
-                  },
-                  {
-                    case: {
-                      $lt: [
-                        {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "day",
-                          },
-                        },
-                        30,
-                      ],
-                    },
-                    then: {
-                      $concat: [
-                        {
-                          $toString: {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "day",
-                            },
-                          },
-                        },
-                        " d",
-                      ],
-                    },
-                  },
-                  {
-                    case: {
-                      $lt: [
-                        {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "month",
-                          },
-                        },
-                        12,
-                      ],
-                    },
-                    then: {
-                      $concat: [
-                        {
-                          $toString: {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "month",
-                            },
-                          },
-                        },
-                        " m",
-                      ],
-                    },
-                  },
-                ],
-                default: {
-                  $concat: [
-                    {
-                      $toString: {
-                        $dateDiff: {
-                          startDate: "$created_at",
-                          endDate: "$$NOW",
-                          unit: "year",
-                        },
-                      },
-                    },
-                    " y",
-                  ],
-                },
-              },
-            },
-          },
-        },
-        {
           $project: {
             created_by: 1,
             distance: 1,
             location: 1,
             content: 1,
             comments: 1,
-            relative_time: 1,
+            created_at: 1,
             score: 1,
           },
         },
+        { $skip: skip }, // Skip the documents for previous pages
+        { $limit: pageSize },
         // Limit the number of documents to the page size
       ]);
 

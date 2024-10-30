@@ -7,13 +7,15 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ContextMenu from "./ContetMenu";
 import Link from "next/link";
-import Loader from "./Loader";
+import getRelativeTime from "@/utils/getRelativeTime";
 
 export default function Post({ post }) {
+  const { created_at } = post;
+  const relative_time = getRelativeTime(created_at);
+
   const [score, setScore] = useState(post.score);
   const { errorToast, successToast } = useContext(toastContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isVoting, setIsVote] = useState(false);
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent card click when menu is toggled
@@ -36,7 +38,7 @@ export default function Post({ post }) {
   };
 
   const handleUpvote = async () => {
-    setIsVote(true);
+    setScore((prev) => prev + 1);
 
     const res = await fetch("/api/vote", {
       method: "POST",
@@ -44,18 +46,16 @@ export default function Post({ post }) {
       body: JSON.stringify({ postId: post._id, voteType: "upvote" }),
     });
     const response = await res.json();
-    if (res.ok) {
-      setIsVote(false);
-      setScore((prev) => prev + 1);
-    } else {
-      setIsVote(false);
+    if (!res.ok) {
       errorToast(response.message);
+      setScore((prev) => prev - 1);
       console.error("Failed to upvote.");
     }
   };
 
   const handleDownvote = async () => {
-    setIsVote(true);
+    setScore((prev) => prev - 1);
+
     const res = await fetch("/api/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,12 +63,9 @@ export default function Post({ post }) {
     });
     const response = await res.json();
 
-    if (res.ok) {
-      setIsVote(false);
-      setScore((prev) => prev - 1);
-    } else {
-      setIsVote(false);
+    if (!res.ok) {
       errorToast(response.message);
+      setScore((prev) => prev + 1);
       console.error("Failed to downvote.");
     }
   };
@@ -86,11 +83,11 @@ export default function Post({ post }) {
                 <div className="flex gap-2">
                   <p className="text-[14px]">{post.created_by}</p>
                   <p className="text-[12px] text-subtle-text">
-                    ~{post.distance}km
+                    ~{post.distance || "0"}km
                   </p>
                 </div>
                 <p className="text-[12px] text-subtle-text">
-                  {post.relative_time || "0 min"} ago
+                  {relative_time || "0 min"} ago
                 </p>
               </div>
               <ContextMenu
@@ -111,23 +108,17 @@ export default function Post({ post }) {
         <div className="flex items-center">
           <button
             onClick={handleUpvote}
-            disabled={isVoting}
             className="flex items-center text-indigo-200"
           >
             <span className="mr-1">
               <KeyboardArrowUpOutlinedIcon className="text-[36px]" />
             </span>
           </button>
-          {!isVoting ? (
-            <p className="text-light-text text-[14px] font-semibold text-center">
-              {score}
-            </p>
-          ) : (
-            <div className="loader w-3"></div>
-          )}
+          <p className="text-light-text text-[14px] font-semibold text-center">
+            {score || "0"}
+          </p>
           <button
             onClick={handleDownvote}
-            disabled={isVoting}
             className="flex items-center text-indigo-200"
           >
             <span className="mr-1">

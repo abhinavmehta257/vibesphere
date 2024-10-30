@@ -38,7 +38,7 @@ function PostPage() {
     };
 
     fetchComments();
-  }, [post_id, post]);
+  }, [post_id]);
 
   return (
     <>
@@ -65,7 +65,7 @@ function PostPage() {
                         <p className="text-[14px]">{post.created_by}</p>
                       </div>
                       <p className="text-[12px] text-subtle-text">
-                        {post.relative_time}
+                        {post.relative_time || "0 min"}
                       </p>
                     </div>
                   </div>
@@ -83,7 +83,11 @@ function PostPage() {
         {comments ? <CommentList comments={comments} /> : <Loader />}
       </div>
       {/* Comment Input Area */}
-      <CommentInput postId={post_id} setPost={setPost} />
+      <CommentInput
+        postId={post_id}
+        setPost={setPost}
+        setComments={setComments}
+      />
     </>
   );
 }

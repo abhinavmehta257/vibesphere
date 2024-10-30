@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
 import toastContext from "@/context/toastContext";
+import postContext from "@/context/postContext";
 import { Toaster, toast } from "react-hot-toast";
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
 import Cookies from "js-cookie";
@@ -15,28 +16,8 @@ import Head from "next/head";
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [sortType, setSortType] = useState("hot");
+  const [posts, setPosts] = useState([]);
   // Handle form submission
-  const handlePostSubmit = async (content, location, setIsPosting) => {
-    const created_at = new Date();
-    console.log(created_at);
-
-    const res = await fetch("/api/post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content, location, created_at }),
-    });
-
-    const newPost = await res.json();
-    console.log(newPost);
-
-    if (res.ok) {
-      setShowForm(false);
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
-    } else {
-      errorToast(newPost.message);
-    }
-    setIsPosting(false);
-  };
 
   useEffect(() => {
     const user_id = Cookies.get("user_id");
@@ -67,25 +48,27 @@ export default function Home() {
   };
 
   return (
-    <toastContext.Provider value={{ successToast, warningToast, errorToast }}>
-      <Head>
-        <title>VibeSphere</title>
-      </Head>
-      <div className="min-h-screen p-4 bg-dark-background">
-        <Header sortType={sortType} setSortType={setSortType} />
-        <div className="w-full h-full max-w-md space-y-6 ">
-          {showForm && <PostForm onSubmit={handlePostSubmit} />}
-          <div className="mt-[100px]">
-            <PostList sortType={sortType} />
+    <postContext.Provider value={{ posts, setPosts }}>
+      <toastContext.Provider value={{ successToast, warningToast, errorToast }}>
+        <Head>
+          <title>VibeSphere</title>
+        </Head>
+        <div className="min-h-screen p-4 bg-dark-background">
+          <Header sortType={sortType} setSortType={setSortType} />
+          <div className="w-full h-full max-w-md space-y-6 ">
+            {showForm && <PostForm setShowForm={setShowForm} />}
+            <div className="mt-[100px]">
+              <PostList sortType={sortType} />
+            </div>
           </div>
+          <Toaster />
+          <FloatingActionButton
+            onClick={() => setShowForm(!showForm)}
+            showForm={showForm}
+          />
         </div>
-        <Toaster />
-        <FloatingActionButton
-          onClick={() => setShowForm(!showForm)}
-          showForm={showForm}
-        />
-      </div>
-      <WelcomePopup />
-    </toastContext.Provider>
+        <WelcomePopup />
+      </toastContext.Provider>
+    </postContext.Provider>
   );
 }

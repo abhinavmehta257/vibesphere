@@ -12,8 +12,7 @@ const postSchema = new mongoose.Schema({
   comments: { type: Number, default: 0 },
   downvotes: { type: Number, default: 0 },
   is_active: { type: Boolean, default: true },
-});
-// Enable geospatial indexing
+}); // Enable geospatial indexing
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
 module.exports = Post;

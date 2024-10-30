@@ -17,149 +17,9 @@ export default async function handler(req, res) {
     case "GET":
       // Fetch comments for a specific post
       try {
-        const comments = await Comment.aggregate([
-          {
-            $match: {
-              post_id: new ObjectId(post_id),
-            },
-          },
-          {
-            $addFields: {
-              relative_time: {
-                $switch: {
-                  branches: [
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "minute",
-                            },
-                          },
-                          60,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "minute",
-                              },
-                            },
-                          },
-                          " min",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "hour",
-                            },
-                          },
-                          24,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "hour",
-                              },
-                            },
-                          },
-                          " hr",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "day",
-                            },
-                          },
-                          30,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "day",
-                              },
-                            },
-                          },
-                          " d",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "month",
-                            },
-                          },
-                          12,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "month",
-                              },
-                            },
-                          },
-                          " m",
-                        ],
-                      },
-                    },
-                  ],
-                  default: {
-                    $concat: [
-                      {
-                        $toString: {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "year",
-                          },
-                        },
-                      },
-                      " y",
-                    ],
-                  },
-                },
-              },
-            },
-          },
-        ]);
+        const comments = await Comment.find({
+          post_id: new ObjectId(post_id),
+        });
         return res.status(200).json(comments);
       } catch (error) {
         return res
@@ -170,7 +30,7 @@ export default async function handler(req, res) {
     case "POST":
       // Add a new comment to the post
       try {
-        const { text } = req.body;
+        const { text, created_by, created_at } = req.body;
         const result = await moderateText(text);
 
         if (!result.isApproved) {
@@ -188,12 +48,12 @@ export default async function handler(req, res) {
         }
         post.comments += 1;
         await post.save();
-        const user_name = generateAnonymousName();
 
         const newComment = await Comment.create({
           post_id,
-          created_by: user_name,
+          created_by,
           text,
+          created_at,
         });
 
         return res.status(201).json(newComment);

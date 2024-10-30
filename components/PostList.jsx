@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useContext } from "react";
 import NoData from "./ui/NoData";
 import Post from "./ui/Post";
 import Loader from "./ui/Loader";
 import checkLocationPermission from "@/utils/checkLocationPermission";
+import postContext from "@/context/postContext";
 
 export default function PostList({ sortType }) {
-  const [posts, setPosts] = useState([]);
+  const { posts, setPosts } = useContext(postContext);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
