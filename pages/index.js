@@ -20,18 +20,6 @@ export default function Home() {
   // Handle form submission
 
   useEffect(() => {
-    const storedSortType = localStorage.getItem("sortType");
-    if (storedSortType) {
-      setSortType(storedSortType);
-    }
-  }, []);
-
-  // Update localStorage whenever sortType changes
-  useEffect(() => {
-    localStorage.setItem("sortType", sortType);
-  }, [sortType]);
-
-  useEffect(() => {
     const user_id = Cookies.get("user_id");
     if (!user_id) {
       Cookies.set("user_id", crypto.randomUUID());
