@@ -1,13 +1,14 @@
 // components/Post.js
 import toastContext from "@/context/toastContext";
-import { useContext, useState } from "react";
-import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
-import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import ContextMenu from "./ContetMenu";
-import Link from "next/link";
 import getRelativeTime from "@/utils/getRelativeTime";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
+import KeyboardArrowUpOutlinedIcon from "@mui/icons-material/KeyboardArrowUpOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import ContextMenu from "./ContetMenu";
+import ShareContextMenu from "./ShareContextMenu";
 
 export default function Post({ post }) {
   const { created_at } = post;
@@ -16,10 +17,16 @@ export default function Post({ post }) {
   const [score, setScore] = useState(post.score);
   const { errorToast, successToast } = useContext(toastContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent card click when menu is toggled
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const ShareToggleMenu = (e) => {
+    e.stopPropagation(); // Prevent card click when menu is toggled
+    setIsShareMenuOpen(!isShareMenuOpen);
   };
 
   const handleReport = async () => {
@@ -135,6 +142,13 @@ export default function Post({ post }) {
             </p>
           </Link>
         </div>
+        <ShareContextMenu
+          post={{ ...post, relative_time }}
+          isShareMenuOpen={isShareMenuOpen}
+          setIsShareMenuOpen={setIsShareMenuOpen}
+          ShareToggleMenu={ShareToggleMenu}
+          post_id={post._id}
+        />
       </div>
     </div>
   );

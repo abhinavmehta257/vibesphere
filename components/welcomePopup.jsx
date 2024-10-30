@@ -25,7 +25,7 @@ const WelcomePopup = () => {
           </h2>
           <p className="text-light-text mb-4">
             Connect with others around you, share your vibe, and feel the
-            community spirit! 🌍
+            community spirit anonymously! 🌍
           </p>
           <p className="text-light-text mb-4">
             Please allow location permissions to see vibes near you and help us
@@ -33,7 +33,7 @@ const WelcomePopup = () => {
           </p>
           <p className="text-light-text mb-4">
             Remember, be kind, respectful, and keep our community positive and
-            safe. 💙
+            safe. 💙 Your identity is always protected!
           </p>
           <button
             className="mt-4 bg-dark-surface text-white px-4 py-2 rounded hover:bg-indigo-700 focus:outline-none"

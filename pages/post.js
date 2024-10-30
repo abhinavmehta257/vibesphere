@@ -6,13 +6,14 @@ import CommentInput from "@/components/CommentInput";
 import CommentList from "@/components/CommentList";
 import Link from "next/link";
 import Head from "next/head";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 function PostPage() {
   const router = useRouter();
   const { post_id } = router.query;
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
-
+  const url = process.env.NEXT_PUBLIC_SITE_URL;
   useEffect(() => {
     // Fetch post data here and set it to the state
     const fetchPost = async () => {
@@ -42,12 +43,41 @@ function PostPage() {
 
   return (
     <>
-      <Head>
-        <title>{post ? post.content.slice(0, 15) + "..." : "VibeSphere"}</title>
-      </Head>
-      <div className="min-h-screen p-4 pb-24 bg-dark-background">
+      {post ? (
+        <Head>
+          <title>
+            {post ? post.content.slice(0, 15) + "..." : "VibeSphere"}
+          </title>
+          <meta
+            name="description"
+            content={post ? post.content.slice(0, 150) : "A post on VibeSphere"}
+          />
+          <meta
+            property="og:title"
+            content={post ? post.content.slice(0, 15) + "..." : "VibeSphere"}
+          />
+          <meta
+            property="og:description"
+            content={post ? post.content.slice(0, 150) : "A post on VibeSphere"}
+          />
+          <meta
+            property="og:image"
+            content={`/api/og?content=${encodeURIComponent(
+              post.content
+            )}&created_by=${encodeURIComponent(post.created_by)}&distance=${
+              post.distance || "0"
+            }&time_ago=${post.relative_time || "0 min"}&score=${
+              post.score || "0"
+            }&comments=${post.comments || "0"}`}
+          />
+          <meta property="og:url" content={`${url}/posts/${post_id}`} />
+          <meta property="og:type" content="article" />
+        </Head>
+      ) : null}
+      <div className="min-h-screen py-6 px-4 pb-24 bg-dark-background">
         <Link href={"/"}>
-          <h3 className="text-2xl font-bold text-light-text mb-4">
+          <h3 className="text-2xl font-bold text-light-text flex items-center gap-2 pb-4">
+            <ArrowBackIosNewIcon />
             VibeSphere
           </h3>
         </Link>

@@ -1,17 +1,15 @@
 // pages/index.js
-import { useState, useEffect, useContext } from "react";
+import FloatingActionButton from "@/components/ui/FloatingActionButton";
+import Header from "@/components/ui/Header";
+import WelcomePopup from "@/components/welcomePopup";
+import postContext from "@/context/postContext";
+import toastContext from "@/context/toastContext";
+import Cookies from "js-cookie";
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
-import toastContext from "@/context/toastContext";
-import postContext from "@/context/postContext";
-import { Toaster, toast } from "react-hot-toast";
-import FloatingActionButton from "@/components/ui/FloatingActionButton";
-import Cookies from "js-cookie";
-import Header from "@/components/ui/Header";
-import Loader from "@/components/ui/Loader";
-import checkLocationPermission from "@/utils/checkLocationPermission";
-import WelcomePopup from "@/components/welcomePopup";
-import Head from "next/head";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);

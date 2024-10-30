@@ -1,5 +1,4 @@
 import React from "react";
-
 function Header({ sortType, setSortType }) {
   return (
     <>
