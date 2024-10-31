@@ -15,6 +15,7 @@ export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [sortType, setSortType] = useState("new");
   const [posts, setPosts] = useState([]);
+  const [isLocation, setIsLocation] = useState(false);
   // Handle form submission
 
   useEffect(() => {
@@ -56,7 +57,11 @@ export default function Home() {
           <div className="w-full h-full max-w-md space-y-6 ">
             {showForm && <PostForm setShowForm={setShowForm} />}
             <div className="mt-[100px]">
-              <PostList sortType={sortType} />
+              {isLocation ? (
+                <PostList sortType={sortType} />
+              ) : (
+                <WelcomePopup setIsLocation={setIsLocation} />
+              )}
             </div>
           </div>
           <Toaster />
@@ -65,7 +70,6 @@ export default function Home() {
             showForm={showForm}
           />
         </div>
-        <WelcomePopup />
       </toastContext.Provider>
     </postContext.Provider>
   );

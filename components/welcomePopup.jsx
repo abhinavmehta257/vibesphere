@@ -1,19 +1,44 @@
-import React, { useEffect, useState } from "react";
+import toastContext from "@/context/toastContext";
+import checkLocationPermission from "@/utils/checkLocationPermission";
+import React, { useContext, useEffect, useState } from "react";
 
-const WelcomePopup = () => {
+const WelcomePopup = ({ setIsLocation }) => {
   const [showPopup, setShowPopup] = useState(false);
-
+  const { errorToast } = useContext(toastContext);
   useEffect(() => {
-    // Check if the user has already seen the popup
-    const hasSeenPopup = localStorage.getItem("hasSeenPopup");
-    if (!hasSeenPopup) {
-      setShowPopup(true);
-      localStorage.setItem("hasSeenPopup", "true"); // Mark as seen
-    }
+    const checkPermissionAndPopup = async () => {
+      // Check if the user has already seen the popup
+      const isLocation = await checkLocationPermission();
+
+      const hasSeenPopup = localStorage.getItem("hasSeenPopup");
+      console.log("hasSeenPopup", hasSeenPopup);
+
+      if (hasSeenPopup == null) {
+        setShowPopup(true);
+      } else {
+        if (isLocation) {
+          setIsLocation(isLocation);
+        }
+      }
+      if (!isLocation) {
+        setShowPopup(true);
+      }
+    };
+
+    checkPermissionAndPopup();
   }, []);
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
+  const handleClosePopup = async () => {
+    const isLocation = await checkLocationPermission(errorToast);
+    console.log(isLocation);
+
+    if (isLocation) {
+      setShowPopup(false);
+      setIsLocation(true);
+    } else {
+      errorToast("Location permission is required for this app to work.");
+    }
+    localStorage.setItem("hasSeenPopup", "true"); // Mark as seen
   };
 
   return (
@@ -34,6 +59,9 @@ const WelcomePopup = () => {
           <p className="text-light-text mb-4">
             Remember, be kind, respectful, and keep our community positive and
             safe. 💙 Your identity is always protected!
+          </p>
+          <p className="text-red-400 text-[12px]">
+            **Location permission is necessary for this app to work
           </p>
           <button
             className="mt-4 bg-dark-surface text-white px-4 py-2 rounded hover:bg-indigo-700 focus:outline-none"

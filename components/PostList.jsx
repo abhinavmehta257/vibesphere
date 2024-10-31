@@ -4,6 +4,7 @@ import Post from "./ui/Post";
 import Loader from "./ui/Loader";
 import checkLocationPermission from "@/utils/checkLocationPermission";
 import postContext from "@/context/postContext";
+import toastContext from "@/context/toastContext";
 
 export default function PostList({ sortType }) {
   const { posts, setPosts } = useContext(postContext);
@@ -11,30 +12,31 @@ export default function PostList({ sortType }) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
-
+  const { errorToast } = useContext(toastContext);
   const fetchNearbyPosts = async (page, radius = 1000) => {
     setIsLoading(true);
     try {
       // Get user's current location
-      checkLocationPermission();
+      // checkLocationPermission();
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-
         // Send a request to the API with location, radius, sortType, and page
         const res = await fetch(
           `/api/post?longitude=${longitude}&latitude=${latitude}&radius=${radius}&sort_type=${sortType}&page=${page}`
         );
+        const data = await res.json();
         if (res.ok) {
           setIsLoading(false);
         } else {
+          errorToast(data.message);
           throw new Error("Failed to fetch posts");
         }
 
-        const data = await res.json();
         setPosts((prevPosts) => (page === 1 ? data : [...prevPosts, ...data])); // Reset posts if page is 1
         setHasMore(data.length > 0); // Check if more posts are available
       });
     } catch (error) {
+      errorToast(data.message);
       console.error("Error fetching nearby posts:", error);
     }
   };
