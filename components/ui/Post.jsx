@@ -78,22 +78,24 @@ export default function Post({ post }) {
   };
 
   return (
-    <div className="p-4 bg-dark-surface rounded-md shadow">
-      <div className="flex gap-2 w-full">
-        <div className="flex flex-col gap-3 w-full">
+    <div className="p-4 bg-background rounded-[8px] border-[2px] border-purple">
+      <div className="flex  w-full">
+        <div className="flex flex-col gap-[8px] w-full">
           <div className="flex w-full items-center gap-2">
-            <div className="p-1 rounded-full bg-dark-background text-light-tet">
+            <div className="p-1 rounded-full bg-purple text-background">
               <PersonOutlinedIcon />
             </div>
             <div className="flex justify-between w-full">
               <div>
                 <div className="flex gap-2">
-                  <p className="text-[14px]">{post.created_by}</p>
-                  <p className="text-[12px] text-subtle-text">
+                  <p className="text-[14px] text-dark-text font-semibold">
+                    {post.created_by}
+                  </p>
+                  <p className="text-[12px] text-purple font-semibold">
                     ~{post.distance || "0"}km
                   </p>
                 </div>
-                <p className="text-[12px] text-subtle-text">
+                <p className="text-[12px] text-subtle-text text-purple font-semibold">
                   {relative_time || "0 min"} ago
                 </p>
               </div>
@@ -105,50 +107,46 @@ export default function Post({ post }) {
               />
             </div>
           </div>
-          <p className="text-light-text">{post.content}</p>
+          <p className="text-dark-text">{post.content}</p>
         </div>
       </div>
       {/* <div className="flex justify-start gap-4 text-[12px] text-subtle-text pb-2">
         <div>{post.comments || "0"} comments</div>
       </div> */}
-      <div className="flex justify-start items-center gap-6 text-[12px] text-subtle-text border-t-[1px] border-dark-background mt-2 pt-2">
-        <div className="flex items-center">
-          <button
-            onClick={handleUpvote}
-            className="flex items-center text-indigo-200"
-          >
+      <div className="flex justify-start items-center gap-[24px] text-[12px] text-subtle-text mt-[18px]">
+        <div className="flex items-center ">
+          <button onClick={handleUpvote} className="flex items-center">
             <span className="mr-1">
-              <KeyboardArrowUpOutlinedIcon className="text-[36px]" />
+              <KeyboardArrowUpOutlinedIcon className="text-[36px] text-light-purple" />
             </span>
           </button>
-          <p className="text-light-text text-[14px] font-semibold text-center">
+          <p className="text-purple text-[14px] font-semibold text-center">
             {score || "0"}
           </p>
-          <button
-            onClick={handleDownvote}
-            className="flex items-center text-indigo-200"
-          >
+          <button onClick={handleDownvote} className="flex items-center">
             <span className="mr-1">
-              <KeyboardArrowDownOutlinedIcon className="text-[36px]" />
+              <KeyboardArrowDownOutlinedIcon className="text-[36px] text-light-purple" />
             </span>
           </button>
         </div>
 
-        <div className="text-indigo-200">
+        <div className="text-light-pink">
           <Link href={`/post?post_id=${post._id}`} className="flex gap-2">
-            <ChatBubbleOutlineOutlinedIcon />{" "}
-            <p className="text-light-text text-[14px] font-semibold text-center">
+            <ChatBubbleOutlineOutlinedIcon className="text-light-purple" />{" "}
+            <p className="text-purple text-[14px] font-semibold text-center">
               {post.comments || "0"}
             </p>
           </Link>
         </div>
-        <ShareContextMenu
-          post={{ ...post, relative_time }}
-          isShareMenuOpen={isShareMenuOpen}
-          setIsShareMenuOpen={setIsShareMenuOpen}
-          ShareToggleMenu={ShareToggleMenu}
-          post_id={post._id}
-        />
+        <div className="text-light-purple">
+          <ShareContextMenu
+            post={{ ...post, relative_time }}
+            isShareMenuOpen={isShareMenuOpen}
+            setIsShareMenuOpen={setIsShareMenuOpen}
+            ShareToggleMenu={ShareToggleMenu}
+            post_id={post._id}
+          />
+        </div>
       </div>
     </div>
   );

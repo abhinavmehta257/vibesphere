@@ -45,19 +45,27 @@ function CommentInput({ postId, setPost, setComments }) {
     }
   };
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-dark-background p-4 flex items-center gap-2 border-t border-dark-surface">
+    <div className="fixed bg-background bottom-0 left-0 w-full bg-dark-background p-4 flex items-center gap-2">
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Add a comment..."
-        className="flex-1 p-2 rounded-lg bg-dark-surface text-light-text"
+        className="flex-1 p-2 rounded-lg bg-background text-purple border-[2px] border-purple"
         rows={1}
       />
       <button
         onClick={handleCommentSubmit}
-        className="px-4 py-2 bg-primary text-light-text rounded-lg hover:bg-primary-hover transition border-[1px] border-dark-surface focus:border-light-text focus:border-[1px]"
+        className="relative px-[19px] py-[11px] bg-primary text-light-text rounded-[8px] outline-offset-[-3px] outline outline-[3px] outline-purple text-purple"
       >
         Post
+        <span
+          className="absolute inset-0 rounded-lg outline outline-[3px] outline-blue outline-offset-[-3px] -top-[2px] -left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none z-[-1]"
+          aria-hidden="true"
+        ></span>
+        <span
+          className="absolute inset-0 rounded-lg outline outline-[3px] outline-pink outline-offset-[-3px] top-[2px] left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none z-[-2]"
+          aria-hidden="true"
+        ></span>
       </button>
       <Toaster />
     </div>

@@ -60,22 +60,31 @@ export default function PostForm({ setShowForm }) {
     <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-80 m-0 z-50">
       <form
         onSubmit={handlePostSubmit}
-        className="flex flex-col space-y-4 p-4 bg-dark-surface shadow rounded-md w-[80%]"
+        className="flex flex-col space-y-4 p-4 bg-background rounded-[8px] w-[80%]"
       >
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Share your thoughts anonymously..."
-          className="p-2 border bg-dark-surface border-dark-background rounded-md resize-none focus:outline-none focus:border-light-surface"
+          className="p-2 bg-background border-purple rounded-md resize-none border-[2px]"
           rows={3}
           maxLength={256}
         />
         <button
           type="submit"
           disabled={isPosting}
-          className="bg-dark-background text-white py-2 rounded-md hover:border-light-surface"
+          className="relative px-[19px] py-[11px] text-light-text rounded-[8px] outline-offset-[-3px] outline outline-[3px] outline-purple text-purple"
         >
           {isPosting ? "posting..." : "Post"}
+
+          {/* <span
+            className="absolute inset-0 rounded-lg outline outline-[3px] outline-blue outline-offset-[-3px] -top-[2px] -left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none"
+            aria-hidden="true"
+          ></span>
+          <span
+            className="absolute inset-0 rounded-lg outline outline-[3px] outline-pink outline-offset-[-3px] top-[2px] left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none"
+            aria-hidden="true"
+          ></span> */}
         </button>
       </form>
     </div>

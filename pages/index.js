@@ -52,11 +52,11 @@ export default function Home() {
         <Head>
           <title>VibeSphere</title>
         </Head>
-        <div className="min-h-screen p-4 bg-dark-background">
+        <div className="min-h-screen p-4 bg-background">
           <Header sortType={sortType} setSortType={setSortType} />
           <div className="w-full h-full max-w-md space-y-6 ">
             {showForm && <PostForm setShowForm={setShowForm} />}
-            <div className="mt-[100px]">
+            <div className="mt-[132px]">
               {isLocation ? (
                 <PostList sortType={sortType} />
               ) : (

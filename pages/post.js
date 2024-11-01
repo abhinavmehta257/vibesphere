@@ -74,36 +74,38 @@ function PostPage() {
           <meta property="og:type" content="article" />
         </Head>
       ) : null}
-      <div className="min-h-screen py-6 px-4 pb-24 bg-dark-background">
+      <div className="min-h-screen py-6 px-4 pb-24 bg-background">
         <Link href={"/"}>
-          <h3 className="text-2xl font-bold text-light-text flex items-center gap-2 pb-4">
-            <ArrowBackIosNewIcon />
-            VibeSphere
-          </h3>
+          <div className="flex gap-[8px] items-center text-purple text-[36px]">
+            {/* <ArrowBackIosNewIcon /> */}
+            <img className="w-[180px]" src="/logo.png" alt="" srcset="" />
+          </div>
         </Link>
         {post ? (
-          <div className="p-4 bg-dark-surface rounded-md shadow">
+          <div className="p-4 bg-background rounded-[8px] border-[3px] border-purple mt-[16px]">
             <div className="flex gap-2 w-full">
-              <div className="flex flex-col gap-3 w-full">
+              <div className="flex flex-col gap-[8px] w-full">
                 <div className="flex w-full items-center gap-2">
-                  <div className="p-1 rounded-full bg-dark-background text-light-tet">
+                  <div className="p-1 rounded-full bg-purple text-background">
                     <PersonOutlinedIcon />
                   </div>
                   <div className="flex justify-between w-full">
                     <div>
                       <div className="flex gap-2">
-                        <p className="text-[14px]">{post.created_by}</p>
+                        <p className="text-[14px] text-dark-text font-semibold">
+                          {post.created_by}
+                        </p>
                       </div>
-                      <p className="text-[12px] text-subtle-text">
+                      <p className="text-[12px] text-purple font-semibold">
                         {post.relative_time || "0 min"}
                       </p>
                     </div>
                   </div>
                 </div>
-                <p className="text-light-text">{post.content}</p>
+                <p className="text-dark-text">{post.content}</p>
               </div>
             </div>
-            <div className="flex justify-start gap-4 text-[12px] text-subtle-text">
+            <div className="text-[12px] text-purple font-semibold mt-[8px]">
               <div>{post?.comments || "0"} comments</div>
             </div>
           </div>
