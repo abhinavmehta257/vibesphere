@@ -1,6 +1,7 @@
 // components/PostForm.js
 import postContext from "@/context/postContext";
 import toastContext from "@/context/toastContext";
+import generateAnonymousName from "@/utils/generateAnonymousName";
 import Cookies from "js-cookie";
 import { useContext, useState } from "react";
 
@@ -12,7 +13,11 @@ export default function PostForm({ setShowForm }) {
   const { errorToast } = useContext(toastContext);
 
   const handlePostSubmit = async (e) => {
-    const user_name = Cookies.get("user_name");
+    let created_by = Cookies.get("user_name");
+    if (!created_by) {
+      created_by = generateAnonymousName();
+      Cookies.set("user_name", created_by);
+    }
     e.preventDefault();
     if (text.length < 5) {
       errorToast("Post cannot be less than 5 characters");
@@ -29,7 +34,7 @@ export default function PostForm({ setShowForm }) {
         };
 
         const _post = {
-          created_by: user_name,
+          created_by,
           content: text,
           location,
           created_at,

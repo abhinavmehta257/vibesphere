@@ -3,13 +3,14 @@ import Post from "../../../model/postSchema";
 import rateLimit from "../../../utils/rateLimit";
 import moderateText from "@/utils/moderateText";
 import cookies from "next-cookies";
+import generateAnonymousName from "@/utils/generateAnonymousName";
 
 export default async (req, res) => {
   if (req.method === "POST") {
     const isAllowed = await rateLimit(req, res);
     if (!isAllowed) return;
     const { user_id, user_name } = cookies({ req });
-    const { content, location, created_at } = req.body;
+    const { content, location, created_at, created_by } = req.body;
 
     try {
       const result = await moderateText(content);
@@ -21,7 +22,7 @@ export default async (req, res) => {
 
       await dbConnect();
       const post = await Post.create({
-        created_by: user_name,
+        created_by: user_name || created_by,
         content,
         location: {
           type: "Point",

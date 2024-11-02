@@ -16,7 +16,11 @@ function CommentInput({ postId, setPost, setComments }) {
 
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
-      const created_by = Cookies.get("user_name");
+      let created_by = Cookies.get("user_name");
+      if (!created_by) {
+        created_by = generateAnonymousName();
+        Cookies.set("user_name", created_by);
+      }
       const created_at = new Date();
       const _comment = {
         created_by,

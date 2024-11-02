@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       try {
         const { user_id, user_name } = cookies({ req });
 
-        const { text, created_at } = req.body;
+        const { text, created_at, created_by } = req.body;
         const result = await moderateText(text);
 
         if (!result.isApproved) {
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
         const newComment = await Comment.create({
           post_id,
-          created_by: user_name,
+          created_by: user_name || created_by,
           text,
           created_at,
           commenter_id: user_id,
