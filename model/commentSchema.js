@@ -1,10 +1,14 @@
 // models/Comment.js
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const CommentSchema = new mongoose.Schema({
   post_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Post', // Reference to the Post model
+    ref: "Post", // Reference to the Post model
+    required: true,
+  },
+  commenter_id: {
+    type: String,
     required: true,
   },
   created_by: {
@@ -22,5 +26,6 @@ const CommentSchema = new mongoose.Schema({
   },
 });
 
-const Comment = mongoose.models.Comment || mongoose.model('Comment', CommentSchema);
+const Comment =
+  mongoose.models.Comment || mongoose.model("Comment", CommentSchema);
 module.exports = Comment;

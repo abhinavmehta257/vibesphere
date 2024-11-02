@@ -1,4 +1,5 @@
 import generateAnonymousName from "@/utils/generateAnonymousName";
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -15,11 +16,10 @@ function CommentInput({ postId, setPost, setComments }) {
 
   const handleCommentSubmit = async () => {
     if (comment.trim()) {
-      const created_by = generateAnonymousName();
+      const created_by = Cookies.get("user_name");
       const created_at = new Date();
       const _comment = {
         created_by,
-        user: "Anonymous",
         text: comment,
         created_at,
       };

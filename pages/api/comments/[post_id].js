@@ -4,6 +4,7 @@ import dbConnect from "../../../db/dbConnect";
 import Comment from "../../../model/commentSchema";
 import Post from "@/model/postSchema";
 import moderateText from "@/utils/moderateText";
+import cookies from "next-cookies";
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
@@ -30,7 +31,9 @@ export default async function handler(req, res) {
     case "POST":
       // Add a new comment to the post
       try {
-        const { text, created_by, created_at } = req.body;
+        const { user_id, user_name } = cookies({ req });
+
+        const { text, created_at } = req.body;
         const result = await moderateText(text);
 
         if (!result.isApproved) {
@@ -51,9 +54,10 @@ export default async function handler(req, res) {
 
         const newComment = await Comment.create({
           post_id,
-          created_by,
+          created_by: user_name,
           text,
           created_at,
+          commenter_id: user_id,
         });
 
         return res.status(201).json(newComment);

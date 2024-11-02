@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
-import InstallPWAbutton from "@/components/block/InstallPWAbutton";
+import generateAnonymousName from "@/utils/generateAnonymousName";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
@@ -21,8 +21,12 @@ export default function Home() {
 
   useEffect(() => {
     const user_id = Cookies.get("user_id");
+    const user_name = Cookies.get("user_name");
     if (!user_id) {
       Cookies.set("user_id", crypto.randomUUID());
+    }
+    if (!user_name) {
+      Cookies.set("user_name", generateAnonymousName());
     }
   }, []);
 
