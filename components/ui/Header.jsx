@@ -3,7 +3,7 @@ function Header({ sortType, setSortType }) {
   return (
     <>
       <div className="fixed top-0 left-0 bg-background w-full px-[16px] py-[28px] pt-6 flex flex-col items-start gap-[16px] z-10">
-        <img className="w-[180px]" src="/logo.png" alt="" srcset="" />
+        <img className="w-[180px]" src="/logo.png" alt="" srcSet="" />
         <div className="flex gap-4">
           <p
             className={`relative border-[3px] border-purple px-[26px] py-1 rounded-[20px] cursor-pointer active-button transition duration-200 ${

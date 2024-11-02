@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef, useCallback, useContext } from "react";
-import NoData from "./ui/NoData";
-import Post from "./ui/Post";
-import Loader from "./ui/Loader";
-import checkLocationPermission from "@/utils/checkLocationPermission";
 import postContext from "@/context/postContext";
 import toastContext from "@/context/toastContext";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import Loader from "./ui/Loader";
+import NoData from "./ui/NoData";
+import Post from "./ui/Post";
 
 export default function PostList({ sortType }) {
   const { posts, setPosts } = useContext(postContext);

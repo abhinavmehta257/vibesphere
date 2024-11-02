@@ -8,19 +8,16 @@ function CommentList({ comments }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [comments]);
   return (
-    <div className="mt-[36px]">
-      <h1 className="text-purple font-semibold text-[24px]">Comments</h1>
-      <div className="mt-[16px] flex flex-col h-[50dvh] overflow-y-auto">
-        {comments.map((comment, index) => (
-          <div key={comment._id}>
-            {index != 0 ? (
-              <div className="w-full border-t-[0.5px] border-light-purple"></div>
-            ) : null}
-            <CommentCard comment={comment} />
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
+    <div className="mt-[16px] flex flex-col  overflow-y-auto">
+      <div ref={bottomRef} />
+      {comments.map((comment, index) => (
+        <div key={comment._id}>
+          {index != 0 ? (
+            <div className="w-full border-t-[0.5px] border-light-purple"></div>
+          ) : null}
+          <CommentCard comment={comment} />
+        </div>
+      ))}
     </div>
   );
 }

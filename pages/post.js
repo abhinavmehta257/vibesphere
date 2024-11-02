@@ -74,39 +74,46 @@ function PostPage() {
           <meta property="og:type" content="article" />
         </Head>
       ) : null}
-      <div className="min-h-screen py-6 px-4 pb-24 bg-background">
-        <Link href={"/"}>
-          <div className="flex gap-[8px] items-center text-purple text-[36px]">
-            {/* <ArrowBackIosNewIcon /> */}
-            <img className="w-[180px]" src="/logo.png" alt="" srcset="" />
-          </div>
-        </Link>
+      <div className="min-h-screen py-6 pb-24 bg-background">
         {post ? (
-          <div className="p-4 bg-background rounded-[8px] border-[3px] border-purple mt-[16px]">
-            <div className="flex gap-2 w-full">
-              <div className="flex flex-col gap-[8px] w-full">
-                <div className="flex w-full items-center gap-2">
-                  <div className="p-1 rounded-full bg-purple text-background">
-                    <PersonOutlinedIcon />
-                  </div>
-                  <div className="flex justify-between w-full">
-                    <div>
-                      <div className="flex gap-2">
-                        <p className="text-[14px] text-dark-text font-semibold">
-                          {post.created_by}
-                        </p>
+          <div className="top-0 left-0 w-[100vw] px-4 bg-background">
+            <div>
+              <Link href={"/"}>
+                <div className="flex gap-[8px] items-center text-purple text-[36px]">
+                  {/* <ArrowBackIosNewIcon /> */}
+                  <img className="w-[180px]" src="/logo.png" alt="" srcset="" />
+                </div>
+              </Link>
+              <div className="p-4 bg-background rounded-[8px] border-[3px] border-purple mt-[16px]">
+                <div className="flex gap-2 w-full">
+                  <div className="flex flex-col gap-[8px] w-full">
+                    <div className="flex w-full items-center gap-2">
+                      <div className="p-1 rounded-full bg-purple text-background">
+                        <PersonOutlinedIcon />
                       </div>
-                      <p className="text-[12px] text-purple font-semibold">
-                        {post.relative_time || "0 min"}
-                      </p>
+                      <div className="flex justify-between w-full">
+                        <div>
+                          <div className="flex gap-2">
+                            <p className="text-[14px] text-dark-text font-semibold">
+                              {post.created_by}
+                            </p>
+                          </div>
+                          <p className="text-[12px] text-purple font-semibold">
+                            {post.relative_time || "0 min"}
+                          </p>
+                        </div>
+                      </div>
                     </div>
+                    <p className="text-dark-text">{post.content}</p>
                   </div>
                 </div>
-                <p className="text-dark-text">{post.content}</p>
+                <div className="text-[12px] text-purple font-semibold mt-[8px]">
+                  <div>{post?.comments || "0"} comments</div>
+                </div>
               </div>
-            </div>
-            <div className="text-[12px] text-purple font-semibold mt-[8px]">
-              <div>{post?.comments || "0"} comments</div>
+              <h1 className="text-purple font-semibold text-[24px] mt-[36px]">
+                Comments
+              </h1>
             </div>
           </div>
         ) : (

@@ -13,7 +13,10 @@ export default function PostForm({ setShowForm }) {
 
   const handlePostSubmit = async (e) => {
     e.preventDefault();
-    if (!text) return;
+    if (text.length < 5) {
+      errorToast("Post cannot be less than 5 characters");
+      return;
+    }
     setIsPosting(true);
     const created_at = new Date();
     console.log(created_at);
@@ -66,25 +69,16 @@ export default function PostForm({ setShowForm }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Share your thoughts anonymously..."
-          className="p-2 bg-background border-purple rounded-md resize-none border-[2px]"
+          className="p-2 bg-background border-purple rounded-[8px] text-purple resize-none border-[2px]"
           rows={3}
           maxLength={256}
         />
         <button
           type="submit"
           disabled={isPosting}
-          className="relative px-[19px] py-[11px] text-light-text rounded-[8px] outline-offset-[-3px] outline outline-[3px] outline-purple text-purple"
+          className="relative px-[19px] py-[11px] text-light-text rounded-[8px] bg-purple"
         >
           {isPosting ? "posting..." : "Post"}
-
-          {/* <span
-            className="absolute inset-0 rounded-lg outline outline-[3px] outline-blue outline-offset-[-3px] -top-[2px] -left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none"
-            aria-hidden="true"
-          ></span>
-          <span
-            className="absolute inset-0 rounded-lg outline outline-[3px] outline-pink outline-offset-[-3px] top-[2px] left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none"
-            aria-hidden="true"
-          ></span> */}
         </button>
       </form>
     </div>

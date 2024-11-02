@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       try {
         const comments = await Comment.find({
           post_id: new ObjectId(post_id),
-        });
+        }).sort({ created_at: -1 });
         return res.status(200).json(comments);
       } catch (error) {
         return res

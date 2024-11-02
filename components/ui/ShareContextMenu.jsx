@@ -54,7 +54,7 @@ export default function ShareContextMenu({
             onClick={(e) => e.stopPropagation()} // Prevent card click on menu interaction
           >
             <li
-              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer font-semibold"
               onClick={(e) => {
                 e.stopPropagation(); // Prevent card click
                 handleCopyLink(); // Call copy link function
@@ -64,7 +64,7 @@ export default function ShareContextMenu({
               Copy Link
             </li>
             <li
-              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer font-semibold"
               onClick={(e) => {
                 e.stopPropagation(); // Prevent card click
                 handleShareVia(); // Call share via function

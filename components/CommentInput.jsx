@@ -29,7 +29,7 @@ function CommentInput({ postId, setPost, setComments }) {
         ...prevPost,
         comments: (prevPost.comments || 0) + 1, // Increment comment count
       }));
-      setComments((prevComments) => [...prevComments, _comment]);
+      setComments((prevComments) => [_comment, ...prevComments]);
       const response = await fetch(`/api/comments/${postId}`, {
         method: "POST",
         headers: {
@@ -55,17 +55,9 @@ function CommentInput({ postId, setPost, setComments }) {
       />
       <button
         onClick={handleCommentSubmit}
-        className="relative px-[19px] py-[11px] bg-primary text-light-text rounded-[8px] outline-offset-[-3px] outline outline-[3px] outline-purple text-purple"
+        className="relative px-[16px] py-[8px] bg-primary text-light-text rounded-[8px] bg-purple text-background"
       >
         Post
-        <span
-          className="absolute inset-0 rounded-lg outline outline-[3px] outline-blue outline-offset-[-3px] -top-[2px] -left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none z-[-1]"
-          aria-hidden="true"
-        ></span>
-        <span
-          className="absolute inset-0 rounded-lg outline outline-[3px] outline-pink outline-offset-[-3px] top-[2px] left-[2px] transition-all duration-300 ease-linear hover:opacity-100 pointer-events-none z-[-2]"
-          aria-hidden="true"
-        ></span>
       </button>
       <Toaster />
     </div>
