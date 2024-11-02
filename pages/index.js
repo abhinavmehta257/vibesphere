@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
+import InstallPWAbutton from "@/components/block/InstallPWAbutton";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);

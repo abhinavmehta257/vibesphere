@@ -1,0 +1,22 @@
+{
+  "name": "Vibe Sphere",
+  "short_name": "Vibe Sphere",
+  "description": "VibeSphere is a unique platform designed to capture and share the essence of your most meaningful conversations. Whether with friends, partners, or family, VibeSphere takes your chat data and transforms it into insightful, beautifully crafted visualizations that showcase your relationship's unique dynamics and highlights. Celebrate your connections with personalized keepsakes that capture the vibe and story of your conversations!",
+  "lang": "en-US",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7EBFF",
+  "theme_color": "#5F489D",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
