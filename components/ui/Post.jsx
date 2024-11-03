@@ -138,15 +138,14 @@ export default function Post({ post }) {
             </p>
           </Link>
         </div>
-        <div className="text-light-purple">
-          <ShareContextMenu
-            post={{ ...post, relative_time }}
-            isShareMenuOpen={isShareMenuOpen}
-            setIsShareMenuOpen={setIsShareMenuOpen}
-            ShareToggleMenu={ShareToggleMenu}
-            post_id={post._id}
-          />
-        </div>
+        <ShareContextMenu
+          post={{ ...post, relative_time }}
+          isShareMenuOpen={isShareMenuOpen}
+          setIsShareMenuOpen={setIsShareMenuOpen}
+          ShareToggleMenu={ShareToggleMenu}
+          post_id={post._id}
+          className
+        />
       </div>
     </div>
   );

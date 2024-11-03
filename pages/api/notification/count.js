@@ -9,12 +9,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Invalid request" });
     }
 
+    console.log(user_id);
+
     // Find the post to notify the post owner
-    const notifications = await Notification.find({ userId: user_id }).sort({
-      created_at: -1,
+    const notificationsCount = await Notification.countDocuments({
+      userId: user_id,
     });
 
-    res.status(200).json(notifications);
+    res.status(200).json({ count: notificationsCount });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);

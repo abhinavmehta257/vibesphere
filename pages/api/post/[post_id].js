@@ -1,6 +1,6 @@
-import dbConnect from '../../../db/dbConnect'; // Adjust the path based on your project structure
-import Post from '../../../model/postSchema'; // Import your Post model
-const mongoose = require('mongoose');
+import dbConnect from "../../../db/dbConnect"; // Adjust the path based on your project structure
+import Post from "../../../model/postSchema"; // Import your Post model
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
 export default async function handler(req, res) {
@@ -9,77 +9,190 @@ export default async function handler(req, res) {
 
   await dbConnect(); // Connect to the database
 
+  if (!post_id) {
+    return res.status(500).json({ message: "Error fetching post", error });
+  }
+
   switch (method) {
-    case 'GET':
+    case "GET":
       try {
         const [post] = await Post.aggregate([
-            {
-              $match: {
-                _id: new ObjectId(post_id), // Ensure post_id is an ObjectId
-                is_active: true // Optional: Include only active posts
-              }
+          {
+            $match: {
+              _id: new ObjectId(post_id), // Ensure post_id is an ObjectId
+              is_active: true, // Optional: Include only active posts
             },
-            {
-              $addFields: {
-                distance: { $toInt: { $divide: ["$distance", 1000] } } // Convert distance to kilometers and round to integer
-              }
+          },
+          {
+            $addFields: {
+              distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
             },
-            {
-              $addFields: {
-                relative_time: {
-                  $switch: {
-                    branches: [
-                      {
-                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "minute" } }, 60] },
-                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "minute" } } }, " min"] }
+          },
+          {
+            $addFields: {
+              relative_time: {
+                $switch: {
+                  branches: [
+                    {
+                      case: {
+                        $lt: [
+                          {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "minute",
+                            },
+                          },
+                          60,
+                        ],
                       },
-                      {
-                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "hour" } }, 24] },
-                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "hour" } } }, " hr"] }
+                      then: {
+                        $concat: [
+                          {
+                            $toString: {
+                              $dateDiff: {
+                                startDate: "$created_at",
+                                endDate: "$$NOW",
+                                unit: "minute",
+                              },
+                            },
+                          },
+                          " min",
+                        ],
                       },
-                      {
-                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "day" } }, 30] },
-                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "day" } } }, " d"] }
+                    },
+                    {
+                      case: {
+                        $lt: [
+                          {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "hour",
+                            },
+                          },
+                          24,
+                        ],
                       },
+                      then: {
+                        $concat: [
+                          {
+                            $toString: {
+                              $dateDiff: {
+                                startDate: "$created_at",
+                                endDate: "$$NOW",
+                                unit: "hour",
+                              },
+                            },
+                          },
+                          " hr",
+                        ],
+                      },
+                    },
+                    {
+                      case: {
+                        $lt: [
+                          {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "day",
+                            },
+                          },
+                          30,
+                        ],
+                      },
+                      then: {
+                        $concat: [
+                          {
+                            $toString: {
+                              $dateDiff: {
+                                startDate: "$created_at",
+                                endDate: "$$NOW",
+                                unit: "day",
+                              },
+                            },
+                          },
+                          " d",
+                        ],
+                      },
+                    },
+                    {
+                      case: {
+                        $lt: [
+                          {
+                            $dateDiff: {
+                              startDate: "$created_at",
+                              endDate: "$$NOW",
+                              unit: "month",
+                            },
+                          },
+                          12,
+                        ],
+                      },
+                      then: {
+                        $concat: [
+                          {
+                            $toString: {
+                              $dateDiff: {
+                                startDate: "$created_at",
+                                endDate: "$$NOW",
+                                unit: "month",
+                              },
+                            },
+                          },
+                          " m",
+                        ],
+                      },
+                    },
+                  ],
+                  default: {
+                    $concat: [
                       {
-                        case: { $lt: [{ $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "month" } }, 12] },
-                        then: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "month" } } }, " m"] }
-                      }
+                        $toString: {
+                          $dateDiff: {
+                            startDate: "$created_at",
+                            endDate: "$$NOW",
+                            unit: "year",
+                          },
+                        },
+                      },
+                      " y",
                     ],
-                    default: { $concat: [{ $toString: { $dateDiff: { startDate: "$created_at", endDate: "$$NOW", unit: "year" } } }, " y"] }
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
-            {
-              $addFields: {
-                score: { $subtract: ["$upvotes", "$downvotes"] } // Calculate score
-              }
+          },
+          {
+            $addFields: {
+              score: { $subtract: ["$upvotes", "$downvotes"] }, // Calculate score
             },
-            {
-              $project: {
-                created_by: 1,
-                distance: 1,
-                location: 1,
-                content: 1,
-                score: 1,
-                comments: 1,
-                relative_time: 1
-              }
-            }
-          ]);
-          
+          },
+          {
+            $project: {
+              created_by: 1,
+              distance: 1,
+              location: 1,
+              content: 1,
+              score: 1,
+              comments: 1,
+              relative_time: 1,
+            },
+          },
+        ]);
+
         if (!post) {
-          return res.status(404).json({ message: 'Post not found' });
+          return res.status(404).json({ message: "Post not found" });
         }
         return res.status(200).json(post); // Return the found post
       } catch (error) {
         console.log(error);
-        
-        return res.status(500).json({ message: 'Error fetching post', error });
+
+        return res.status(500).json({ message: "Error fetching post", error });
       }
 
     default:
-      return res.status(405).json({ message: 'Method not allowed' }); // Handle unsupported methods
+      return res.status(405).json({ message: "Method not allowed" }); // Handle unsupported methods
   }
 }

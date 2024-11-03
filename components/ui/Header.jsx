@@ -1,13 +1,22 @@
 import React from "react";
 import InstallPWAbutton from "../block/InstallPWAbutton";
+import Notification from "../block/Notification";
+import InfoPopup from "./InfoPopup";
+
 function Header({ sortType, setSortType }) {
   return (
     <>
-      <div className="fixed top-0 left-0 bg-background w-full z-10">
+      <div className="fixed top-0 left-0 bg-background w-full z-1">
         <InstallPWAbutton />
 
         <div className="px-[16px] py-[28px] pt-6 flex flex-col items-start gap-[16px]">
-          <img className="w-[180px]" src="/logo.png" alt="" srcSet="" />
+          <div className="flex justify-between w-full">
+            <img className="w-[180px]" src="/logo.png" alt="" srcSet="" />
+            <div className="flex gap-[8px] items-center">
+              <Notification />
+              <InfoPopup />
+            </div>
+          </div>
           <div className="flex gap-4">
             <p
               className={`relative border-[3px] border-purple px-[26px] py-1 rounded-[20px] cursor-pointer active-button transition duration-200 ${

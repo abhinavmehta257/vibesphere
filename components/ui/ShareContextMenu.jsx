@@ -45,12 +45,16 @@ export default function ShareContextMenu({
           onClick={ShareToggleMenu}
         ></div>
       ) : null}
-      <div className="relative flex-shrink-0" onClick={ShareToggleMenu}>
-        <ShareIcon className="cursor-pointer text-light-text" />
+      <ShareIcon
+        className="cursor-pointer text-light-purple"
+        onClick={ShareToggleMenu}
+      />
+
+      <div className="relative flex-shrink-0">
         {/* Share Context Menu */}
         {isShareMenuOpen && (
           <ul
-            className="absolute left-0 top-8 bg-white dark:bg-dark-surface shadow-md rounded-lg w-32 z-10 text-light-text"
+            className="absolute -left-6 top-2 bg-white dark:bg-dark-surface shadow-md rounded-lg w-32 z-10 text-light-text"
             onClick={(e) => e.stopPropagation()} // Prevent card click on menu interaction
           >
             <li
