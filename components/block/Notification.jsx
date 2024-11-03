@@ -60,9 +60,11 @@ function Notification() {
               <p className="text-dark-text">No notifications</p>
             ) : (
               notifications.map((notification, index) => (
-                <div className="p-2 border-b last:border-b-0 border-light-purple">
+                <div
+                  key={index}
+                  className="p-2 border-b last:border-b-0 border-light-purple"
+                >
                   <div
-                    key={index}
                     href={`${process.env.NEXT_PUBLIC_SITE_URL}/post?post_id=${notification.postId}`}
                   >
                     <p className="text-sm text-dark-text">
