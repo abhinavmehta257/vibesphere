@@ -28,142 +28,7 @@ export default async function handler(req, res) {
               distance: { $toInt: { $divide: ["$distance", 1000] } }, // Convert distance to kilometers and round to integer
             },
           },
-          {
-            $addFields: {
-              relative_time: {
-                $switch: {
-                  branches: [
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "minute",
-                            },
-                          },
-                          60,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "minute",
-                              },
-                            },
-                          },
-                          " min",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "hour",
-                            },
-                          },
-                          24,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "hour",
-                              },
-                            },
-                          },
-                          " hr",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "day",
-                            },
-                          },
-                          30,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "day",
-                              },
-                            },
-                          },
-                          " d",
-                        ],
-                      },
-                    },
-                    {
-                      case: {
-                        $lt: [
-                          {
-                            $dateDiff: {
-                              startDate: "$created_at",
-                              endDate: "$$NOW",
-                              unit: "month",
-                            },
-                          },
-                          12,
-                        ],
-                      },
-                      then: {
-                        $concat: [
-                          {
-                            $toString: {
-                              $dateDiff: {
-                                startDate: "$created_at",
-                                endDate: "$$NOW",
-                                unit: "month",
-                              },
-                            },
-                          },
-                          " m",
-                        ],
-                      },
-                    },
-                  ],
-                  default: {
-                    $concat: [
-                      {
-                        $toString: {
-                          $dateDiff: {
-                            startDate: "$created_at",
-                            endDate: "$$NOW",
-                            unit: "year",
-                          },
-                        },
-                      },
-                      " y",
-                    ],
-                  },
-                },
-              },
-            },
-          },
+
           {
             $addFields: {
               score: { $subtract: ["$upvotes", "$downvotes"] }, // Calculate score
@@ -177,7 +42,7 @@ export default async function handler(req, res) {
               content: 1,
               score: 1,
               comments: 1,
-              relative_time: 1,
+              created_at: 1,
             },
           },
         ]);

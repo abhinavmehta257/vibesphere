@@ -79,7 +79,9 @@ export default function PostList({ sortType }) {
   return (
     <div className="space-y-4 mt-4 h-full">
       {posts.length > 0
-        ? posts.map((post) => <Post key={post._id} post={post} />)
+        ? posts.map((post) => (
+            <Post key={post._id} post={post} isComment={true} />
+          ))
         : !isLoading && (
             <div className="mt-[250px]">
               <NoData

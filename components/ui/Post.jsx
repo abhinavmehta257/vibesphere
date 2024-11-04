@@ -10,7 +10,7 @@ import { useContext, useState } from "react";
 import ContextMenu from "./ContetMenu";
 import ShareContextMenu from "./ShareContextMenu";
 
-export default function Post({ post }) {
+export default function Post({ post, isComment }) {
   const { created_at } = post;
   const relative_time = getRelativeTime(created_at);
 
@@ -110,9 +110,6 @@ export default function Post({ post }) {
           <p className="text-dark-text">{post.content}</p>
         </div>
       </div>
-      {/* <div className="flex justify-start gap-4 text-[12px] text-subtle-text pb-2">
-        <div>{post.comments || "0"} comments</div>
-      </div> */}
       <div className="flex justify-start items-center gap-[24px] text-[12px] text-subtle-text mt-[18px]">
         <div className="flex items-center ">
           <button onClick={handleUpvote} className="flex items-center">
@@ -130,21 +127,21 @@ export default function Post({ post }) {
           </button>
         </div>
 
-        <div className="text-light-pink">
-          <Link href={`/post?post_id=${post._id}`} className="flex gap-2">
-            <ChatBubbleOutlineOutlinedIcon className="text-light-purple" />{" "}
-            <p className="text-purple text-[14px] font-semibold text-center">
-              {post.comments || "0"}
-            </p>
-          </Link>
-        </div>
+        {isComment ? (
+          <div className="text-light-pink">
+            <Link href={`/post/${post._id}`} className="flex gap-2">
+              <ChatBubbleOutlineOutlinedIcon className="text-light-purple" />{" "}
+              <p className="text-purple text-[14px] font-semibold text-center">
+                {post.comments || "0"}
+              </p>
+            </Link>
+          </div>
+        ) : null}
         <ShareContextMenu
           post={{ ...post, relative_time }}
           isShareMenuOpen={isShareMenuOpen}
           setIsShareMenuOpen={setIsShareMenuOpen}
           ShareToggleMenu={ShareToggleMenu}
-          post_id={post._id}
-          className
         />
       </div>
     </div>

@@ -11,6 +11,7 @@ import { Toaster, toast } from "react-hot-toast";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
 import generateAnonymousName from "@/utils/generateAnonymousName";
+import { successToast, errorToast, warningToast } from "@/utils/toast";
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
@@ -29,27 +30,6 @@ export default function Home() {
       Cookies.set("user_name", generateAnonymousName());
     }
   }, []);
-
-  const successToast = (message) => {
-    toast.success(message, {
-      duration: 2000, // duration in milliseconds
-      position: "bottom-center", // position of the toast
-    });
-  };
-
-  const warningToast = (message) => {
-    toast.warning(message, {
-      duration: 2000, // duration in milliseconds
-      position: "bottom-center", // position of the toast
-    });
-  };
-
-  const errorToast = (message) => {
-    toast.error(message, {
-      duration: 2000, // duration in milliseconds
-      position: "bottom-center", // position of the toast
-    });
-  };
 
   return (
     <postContext.Provider value={{ posts, setPosts }}>
