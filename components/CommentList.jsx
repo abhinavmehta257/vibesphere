@@ -10,14 +10,16 @@ function CommentList({ comments }) {
   return (
     <div className="mt-[16px] flex flex-col  overflow-y-auto">
       <div ref={bottomRef} />
-      {comments.map((comment, index) => (
-        <div key={comment._id}>
-          {index != 0 ? (
-            <div className="w-full border-t-[0.5px] border-light-purple"></div>
-          ) : null}
-          <CommentCard comment={comment} />
-        </div>
-      ))}
+      {comments.length > 0
+        ? comments.map((comment, index) => (
+            <div key={comment._id}>
+              {index != 0 ? (
+                <div className="w-full border-t-[0.5px] border-light-purple"></div>
+              ) : null}
+              <CommentCard comment={comment} />
+            </div>
+          ))
+        : null}
     </div>
   );
 }

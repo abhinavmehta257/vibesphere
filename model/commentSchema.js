@@ -24,6 +24,7 @@ const CommentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  gifUrl: { type: String, required: true },
 });
 
 const Comment =

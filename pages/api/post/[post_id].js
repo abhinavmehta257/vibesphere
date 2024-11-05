@@ -43,6 +43,7 @@ export default async function handler(req, res) {
               score: 1,
               comments: 1,
               created_at: 1,
+              gifUrl: 1,
             },
           },
         ]);

@@ -50,23 +50,23 @@ function PostPage() {
         {post ? (
           <Head>
             <title>
-              {post ? post.content.slice(0, 15) + "..." : "VibeSphere"}
+              {post
+                ? post.length > 15
+                  ? post.content.slice(0, 15)
+                  : post.content + "..."
+                : "VibeSphere"}
             </title>
             <meta
               name="description"
-              content={
-                post ? post.content.slice(0, 150) : "A post on VibeSphere"
-              }
+              content={post ? post.content : "A post on VibeSphere"}
             />
             <meta
               property="og:title"
-              content={post ? post.content.slice(0, 15) + "..." : "VibeSphere"}
+              content={post ? post.content + "..." : "VibeSphere"}
             />
             <meta
               property="og:description"
-              content={
-                post ? post.content.slice(0, 150) : "A post on VibeSphere"
-              }
+              content={post ? post.content : "A post on VibeSphere"}
             />
             <meta
               property="og:image"

@@ -58,6 +58,7 @@ export default async function handler(req, res) {
           text,
           created_at,
           commenter_id: user_id,
+          gifUrl: "none",
         });
 
         return res.status(201).json(newComment);

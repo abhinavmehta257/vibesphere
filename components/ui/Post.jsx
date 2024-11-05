@@ -107,7 +107,12 @@ export default function Post({ post, isComment }) {
               />
             </div>
           </div>
-          <p className="text-dark-text">{post.content}</p>
+          <div className="flex justify-between">
+            <p className="text-dark-text">{post.content}</p>
+            {post.gifUrl ? (
+              <img className="h-[100px]" src={post.gifUrl} />
+            ) : null}
+          </div>
         </div>
       </div>
       <div className="flex justify-start items-center gap-[24px] text-[12px] text-subtle-text mt-[18px]">

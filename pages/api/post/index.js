@@ -10,7 +10,7 @@ export default async (req, res) => {
     const isAllowed = await rateLimit(req, res);
     if (!isAllowed) return;
     const { user_id, user_name } = cookies({ req });
-    const { content, location, created_at, created_by } = req.body;
+    const { content, location, created_at, created_by, gifUrl } = req.body;
 
     try {
       const result = await moderateText(content);
@@ -30,6 +30,7 @@ export default async (req, res) => {
         },
         created_at,
         user_id,
+        gifUrl,
       });
 
       res.status(201).json(post);
@@ -107,6 +108,7 @@ export default async (req, res) => {
             comments: 1,
             created_at: 1,
             score: 1,
+            gifUrl: 1,
           },
         },
         { $skip: skip }, // Skip the documents for previous pages
