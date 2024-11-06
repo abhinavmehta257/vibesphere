@@ -1,12 +1,12 @@
 import React from "react";
-
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 // components/InstallButton.js
 
 import { useState, useEffect } from "react";
 
 const InstallPWAbutton = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-
+  const [isShow, setIsShow] = useState(true);
   useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
@@ -31,8 +31,12 @@ const InstallPWAbutton = () => {
     }
   };
 
-  return deferredPrompt ? (
-    <div className="flex w-full flex-row justify-between items-center bg-purple text-background px-[16px] py-[8px] ">
+  return deferredPrompt && isShow ? (
+    <div className="flex w-full flex-row justify-between items-center bg-purple text-background px-[16px] py-[8px]">
+      <CloseOutlinedIcon
+        className="cursor-pointer"
+        onClick={() => setIsShow(!isShow)}
+      />
       <p>Take your vibes anywhere! </p>
       <button
         onClick={handleInstallClick}

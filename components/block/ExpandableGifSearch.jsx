@@ -21,6 +21,9 @@ const SearchExperience = ({ setSelectedGif, setShowGifPicker }) => {
 
 const ExpandableGifSearch = ({ setSelectedGif, setShowGifPicker }) => {
   const { fetchGifs, searchKey } = useContext(SearchContext);
+  const containerRef = useRef(null);
+  const [width, setWidth] = useState(0);
+
   const handleGifSelect = (gif) => {
     console.log("Selected GIF URL:", gif.images.original.url);
 
@@ -28,8 +31,13 @@ const ExpandableGifSearch = ({ setSelectedGif, setShowGifPicker }) => {
     setShowGifPicker(false); // Close the GIF picker
   };
 
+  useEffect(() => {
+    const width = containerRef.current.getBoundingClientRect().width;
+    setWidth(width);
+  }, [containerRef]);
+
   return (
-    <div className="max-h-[250px]">
+    <div className="max-h-[250px]" ref={containerRef}>
       <SearchBar />
       <SuggestionBar />
       <Grid
@@ -42,7 +50,7 @@ const ExpandableGifSearch = ({ setSelectedGif, setShowGifPicker }) => {
         searchPlaceholder="Search GIFs..." // Optional: Search placeholder
         columns={4}
         className="w-full h-[200px] overflow-y-auto "
-        width={250}
+        width={width}
         noLink={true}
         hideAttribution={true}
       />

@@ -6,10 +6,13 @@ const openai = new OpenAI({
 export default async function moderateText(content) {
   try {
     const response = await openai.moderations.create({
+      model: "omni-moderation-latest",
       input: content,
     });
 
     const results = response.results[0];
+    console.log(results);
+
     if (results.flagged) {
       console.log(results);
       const { message } = generateModerationResponse(results);
