@@ -94,17 +94,16 @@ export default function PostForm({ setShowForm }) {
             <img src={selectedGif} />
           </div>
           <GifBoxOutlinedIcon
-            className="mr-2 text-[24px]"
+            className="mr-2 text-[24px] ml-auto"
             onClick={() => setShowGifPicker(!showGifPicker)}
           />
+          {showGifPicker && (
+            <ExpandableGifSearch
+              setSelectedGif={setSelectedGif}
+              setShowGifPicker={setShowGifPicker}
+            />
+          )}
         </div>
-
-        {showGifPicker && (
-          <ExpandableGifSearch
-            setSelectedGif={setSelectedGif}
-            setShowGifPicker={setShowGifPicker}
-          />
-        )}
 
         <button
           type="submit"

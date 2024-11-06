@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import Link from "next/link";
+import getRelativeTime from "@/utils/getRelativeTime";
 
 function Notification() {
   const [count, setCount] = useState(0);
@@ -71,7 +72,7 @@ function Notification() {
                       {notification.content}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {notification.created_at}
+                      {getRelativeTime(notification.created_at)}
                     </p>
                   </div>
                 </div>
