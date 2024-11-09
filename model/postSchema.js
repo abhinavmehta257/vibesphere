@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
   downvotes: { type: Number, default: 0 },
   is_active: { type: Boolean, default: true },
   user_id: { type: String, required: true },
-  gifUrl: { type: String, required: true },
+  gifUrl: { type: String, required: false },
 }); // Enable geospatial indexing
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
